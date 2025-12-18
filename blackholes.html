@@ -11,26 +11,60 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #000;
-            color: #fff;
-            overflow: hidden;
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --accent: #f093fb;
+            --dark: #0a0a1a;
+            --light: #fff;
+            --glow: rgba(138, 43, 226, 0.6);
         }
 
-        /* Navigation */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: radial-gradient(ellipse at center, #1a0a2e 0%, #0a0a1a 100%);
+            color: var(--light);
+            overflow-x: hidden;
+        }
+
+        body.light-mode {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: #1a1a2e;
+        }
+
+        #blackhole-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
         nav {
             position: fixed;
             top: 0;
             width: 100%;
-            padding: 1.5rem 3rem;
+            padding: 1rem 3rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
+            background: rgba(10, 10, 26, 0.85);
+            backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(138, 43, 226, 0.3);
-            z-index: 100;
+            z-index: 1000;
+        }
+
+        body.light-mode nav {
+            background: rgba(255, 255, 255, 0.85);
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .nav-links {
@@ -39,7 +73,7 @@
         }
 
         nav a {
-            color: #fff;
+            color: var(--light);
             text-decoration: none;
             font-weight: 500;
             padding: 0.5rem 1.5rem;
@@ -47,711 +81,562 @@
             transition: all 0.3s ease;
         }
 
+        body.light-mode nav a {
+            color: #1a1a2e;
+        }
+
         nav a:hover {
+            background: rgba(138, 43, 226, 0.3);
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
             background: rgba(138, 43, 226, 0.2);
-            transform: translateY(-2px);
-        }
-
-        #bhCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Controls Panel */
-        .controls-panel {
-            position: fixed;
-            left: 2rem;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(10, 10, 26, 0.9);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(138, 43, 226, 0.5);
-            border-radius: 20px;
-            padding: 2rem;
-            width: 300px;
-            z-index: 10;
-        }
-
-        .controls-panel h3 {
-            color: #f093fb;
-            margin-bottom: 1.5rem;
-            font-size: 1.5rem;
-        }
-
-        .control-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .control-group label {
-            display: block;
-            color: #b8b8d4;
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-        }
-
-        .slider {
-            width: 100%;
-            height: 6px;
-            border-radius: 5px;
-            background: linear-gradient(to right, #667eea, #764ba2);
-            outline: none;
-            -webkit-appearance: none;
-        }
-
-        .slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: #f093fb;
-            cursor: pointer;
-        }
-
-        .slider::-moz-range-thumb {
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: #f093fb;
-            cursor: pointer;
             border: none;
-        }
-
-        .value-display {
-            color: #f093fb;
-            font-weight: bold;
-            margin-top: 0.5rem;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 0.8rem;
-            margin: 0.5rem 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #fff;
-            border: none;
-            border-radius: 25px;
+            color: var(--light);
             cursor: pointer;
-            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             transition: all 0.3s ease;
         }
 
-        .btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 20px rgba(138, 43, 226, 0.6);
+        body.light-mode .icon-btn {
+            color: #1a1a2e;
         }
 
-        .btn-secondary {
-            background: linear-gradient(135deg, #1a0033 0%, #330066 100%);
+        .icon-btn:hover {
+            background: rgba(138, 43, 226, 0.4);
+            transform: scale(1.1);
         }
 
-        /* Info Panel */
-        .info-panel {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: rgba(10, 10, 26, 0.9);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(138, 43, 226, 0.5);
-            border-radius: 20px;
-            padding: 2rem;
-            max-width: 400px;
-            z-index: 10;
-        }
-
-        .info-panel h2 {
-            color: #f093fb;
-            margin-bottom: 1rem;
-            font-size: 1.8rem;
-        }
-
-        .info-panel p {
-            color: #b8b8d4;
-            line-height: 1.6;
-            margin-bottom: 0.8rem;
-            font-size: 0.95rem;
-        }
-
-        /* Stats Display */
-        .stats-display {
-            position: fixed;
-            top: 5rem;
-            right: 2rem;
-            background: rgba(10, 10, 26, 0.9);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(138, 43, 226, 0.5);
-            border-radius: 15px;
-            padding: 1.5rem;
-            z-index: 10;
-        }
-
-        .stat-item {
-            display: flex;
-            justify-content: space-between;
-            margin: 0.5rem 0;
-            color: #b8b8d4;
-        }
-
-        .stat-value {
-            color: #f093fb;
-            font-weight: bold;
-        }
-
-        /* Effects Toggle */
-        .effects-panel {
-            position: fixed;
-            top: 5rem;
-            left: 2rem;
-            background: rgba(10, 10, 26, 0.9);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(138, 43, 226, 0.5);
-            border-radius: 15px;
-            padding: 1.5rem;
-            z-index: 10;
-        }
-
-        .toggle-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 1rem 0;
-            color: #b8b8d4;
-        }
-
-        .toggle {
+        .container {
             position: relative;
-            width: 50px;
-            height: 25px;
-            background: #333;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: background 0.3s;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 8rem 2rem 4rem;
         }
 
-        .toggle.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
         }
 
-        .toggle::after {
-            content: '';
-            position: absolute;
-            width: 21px;
-            height: 21px;
-            border-radius: 50%;
-            background: white;
-            top: 2px;
-            left: 2px;
-            transition: left 0.3s;
+        .intro {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 4rem;
+            font-size: 1.2rem;
+            color: #b8b8d4;
+            line-height: 1.8;
         }
 
-        .toggle.active::after {
-            left: 27px;
+        body.light-mode .intro {
+            color: #6c757d;
         }
 
-        /* Achievement Notification */
-        .achievement {
-            position: fixed;
-            top: 5rem;
-            left: 50%;
-            transform: translateX(-50%) translateY(-150px);
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 1.5rem 2rem;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(138, 43, 226, 0.8);
-            z-index: 1000;
-            transition: transform 0.5s ease;
-        }
-
-        .achievement.show {
-            transform: translateX(-50%) translateY(0);
-        }
-
-        /* Tutorial Overlay */
-        .tutorial-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 999;
-            display: none;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .tutorial-overlay.active {
-            display: flex;
-        }
-
-        .tutorial-content {
-            background: rgba(10, 10, 26, 0.95);
-            border: 2px solid rgba(138, 43, 226, 0.5);
+        .section {
+            background: rgba(26, 10, 46, 0.6);
+            border: 1px solid rgba(138, 43, 226, 0.3);
             border-radius: 20px;
             padding: 3rem;
-            max-width: 600px;
-            text-align: center;
+            margin-bottom: 3rem;
+            backdrop-filter: blur(10px);
         }
 
-        .tutorial-content h2 {
-            color: #f093fb;
+        body.light-mode .section {
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .section h2 {
+            color: var(--accent);
             margin-bottom: 1.5rem;
             font-size: 2rem;
         }
 
-        .tutorial-content p {
+        .section p {
             color: #b8b8d4;
             line-height: 1.8;
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        body.light-mode .section p {
+            color: #6c757d;
+        }
+
+        .interactive-demo {
+            background: rgba(10, 10, 26, 0.8);
+            border: 2px solid rgba(138, 43, 226, 0.5);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        body.light-mode .interactive-demo {
+            background: rgba(248, 249, 250, 0.9);
+        }
+
+        .demo-canvas {
+            width: 100%;
+            height: 400px;
+            background: #000;
+            border-radius: 15px;
+            margin: 1rem 0;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        .control-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .control-group label {
+            display: block;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: rgba(138, 43, 226, 0.3);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            cursor: pointer;
+        }
+
+        .value-display {
+            color: #b8b8d4;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        body.light-mode .value-display {
+            color: #6c757d;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .info-card {
+            background: rgba(10, 10, 26, 0.8);
+            border: 1px solid rgba(138, 43, 226, 0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        body.light-mode .info-card {
+            background: rgba(248, 249, 250, 0.9);
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            box-shadow: 0 10px 30px var(--glow);
+        }
+
+        .info-card h3 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .info-card p {
+            color: #b8b8d4;
+            line-height: 1.6;
+        }
+
+        body.light-mode .info-card p {
+            color: #6c757d;
+        }
+
+        .equation-box {
+            background: rgba(26, 10, 46, 0.8);
+            border: 1px solid rgba(138, 43, 226, 0.5);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        body.light-mode .equation-box {
+            background: rgba(248, 249, 250, 0.9);
+        }
+
+        .equation {
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .equation-explanation {
+            color: #b8b8d4;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        body.light-mode .equation-explanation {
+            color: #6c757d;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--light);
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px var(--glow);
         }
 
         @media (max-width: 768px) {
-            .controls-panel, .info-panel {
-                width: 90%;
-                left: 50%;
-                transform: translateX(-50%);
-                bottom: 1rem;
-            }
-            
-            .stats-display, .effects-panel {
-                display: none;
-            }
-            
             nav {
-                padding: 1rem;
+                padding: 1rem 1.5rem;
             }
             
             .nav-links {
-                gap: 0.5rem;
+                display: none;
             }
             
-            nav a {
-                padding: 0.5rem 0.8rem;
-                font-size: 0.9rem;
+            .section {
+                padding: 2rem 1.5rem;
+            }
+            
+            .grid-2 {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
+    <canvas id="blackhole-canvas"></canvas>
+
     <nav>
+        <div class="nav-brand">🌌 CosmicLab</div>
         <div class="nav-links">
-            <a href="index.html">🏠 Home</a>
-            <a href="blackholes.html">🌌 Black Holes</a>
-            <a href="quantum.html">⚛️ Quantum</a>
-            <a href="universe.html">🌠 Universe</a>
+            <a href="index.html">Home</a>
+            <a href="blackholes.html">Black Holes</a>
+            <a href="quantum.html">Quantum</a>
+            <a href="universe.html">Universe</a>
         </div>
-        <button class="btn" onclick="showTutorial()" style="width: auto; padding: 0.5rem 1.5rem;">📖 Tutorial</button>
+        <button class="icon-btn" onclick="toggleTheme()">🌓</button>
     </nav>
 
-    <canvas id="bhCanvas"></canvas>
-
-    <!-- Effects Panel -->
-    <div class="effects-panel">
-        <h4 style="color: #f093fb; margin-bottom: 1rem;">Visual Effects</h4>
-        <div class="toggle-item">
-            <span>Gravitational Lensing</span>
-            <div class="toggle active" onclick="toggleEffect(this, 'lensing')" id="lensingToggle"></div>
-        </div>
-        <div class="toggle-item">
-            <span>Accretion Disk</span>
-            <div class="toggle active" onclick="toggleEffect(this, 'disk')" id="diskToggle"></div>
-        </div>
-        <div class="toggle-item">
-            <span>Trails</span>
-            <div class="toggle active" onclick="toggleEffect(this, 'trails')" id="trailsToggle"></div>
-        </div>
-    </div>
-
-    <!-- Stats Display -->
-    <div class="stats-display">
-        <div class="stat-item">
-            <span>Particles:</span>
-            <span class="stat-value" id="particleCount">0</span>
-        </div>
-        <div class="stat-item">
-            <span>Absorbed:</span>
-            <span class="stat-value" id="absorbedCount">0</span>
-        </div>
-        <div class="stat-item">
-            <span>FPS:</span>
-            <span class="stat-value" id="fps">60</span>
-        </div>
-    </div>
-
-    <!-- Controls Panel -->
-    <div class="controls-panel">
-        <h3>Black Hole Controls</h3>
+    <div class="container">
+        <h1>🕳️ Black Hole Physics</h1>
         
-        <div class="control-group">
-            <label>Gravity Strength</label>
-            <input type="range" class="slider" id="gravitySlider" min="3000" max="15000" value="5000" oninput="updateGravity(this.value)">
-            <div class="value-display" id="gravityValue">5000</div>
+        <div class="intro">
+            Black holes are the universe's most extreme objects—regions where gravity is so intense that nothing, not even light, can escape once it crosses the event horizon.
         </div>
 
-        <div class="control-group">
-            <label>Particle Rate</label>
-            <input type="range" class="slider" id="rateSlider" min="1" max="10" value="3" oninput="updateRate(this.value)">
-            <div class="value-display" id="rateValue">3 /sec</div>
+        <div class="section">
+            <h2>What is a Black Hole?</h2>
+            <p>A black hole forms when a massive star collapses under its own gravity, compressing all its mass into an infinitesimally small point called a singularity. The boundary around this singularity is the event horizon—the point of no return.</p>
+            
+            <div class="grid-2">
+                <div class="info-card">
+                    <h3>⚫ The Event Horizon</h3>
+                    <p>The invisible boundary where escape velocity equals the speed of light. Cross it, and there's no coming back.</p>
+                </div>
+                <div class="info-card">
+                    <h3>🎯 The Singularity</h3>
+                    <p>The infinitely dense core where our understanding of physics breaks down completely.</p>
+                </div>
+                <div class="info-card">
+                    <h3>💿 Accretion Disk</h3>
+                    <p>Matter spiraling into the black hole heats up to millions of degrees, emitting brilliant X-rays.</p>
+                </div>
+                <div class="info-card">
+                    <h3>💫 Hawking Radiation</h3>
+                    <p>Quantum effects near the horizon theoretically cause black holes to slowly evaporate.</p>
+                </div>
+            </div>
         </div>
 
-        <div class="control-group">
-            <label>Event Horizon Size</label>
-            <input type="range" class="slider" id="sizeSlider" min="20" max="80" value="30" oninput="updateSize(this.value)">
-            <div class="value-display" id="sizeValue">30 px</div>
+        <div class="section">
+            <h2>The Mathematics of Black Holes</h2>
+            
+            <div class="equation-box">
+                <h3 style="color: var(--accent);">Schwarzschild Radius</h3>
+                <div class="equation">
+                    r<sub>s</sub> = 2GM / c²
+                </div>
+                <p class="equation-explanation">
+                    Where G is the gravitational constant, M is the mass, and c is the speed of light. This formula tells us the size of the event horizon.
+                </p>
+            </div>
+
+            <div class="equation-box">
+                <h3 style="color: var(--accent);">Time Dilation</h3>
+                <div class="equation">
+                    t = t<sub>0</sub> / √(1 - r<sub>s</sub>/r)
+                </div>
+                <p class="equation-explanation">
+                    Time slows down as you approach the event horizon. An observer far away would see you freeze as you reach it.
+                </p>
+            </div>
         </div>
 
-        <button class="btn" onclick="addParticleBurst()">🌟 Add Particle Burst</button>
-        <button class="btn btn-secondary" onclick="createSecondBlackHole()">➕ Add Second Black Hole</button>
-        <button class="btn btn-secondary" onclick="reset()">🔄 Reset Simulation</button>
-    </div>
+        <div class="section">
+            <h2>Interactive Black Hole Simulator</h2>
+            <div class="interactive-demo">
+                <p style="color: #b8b8d4; margin-bottom: 1rem;">Adjust the parameters to see how black hole properties change:</p>
+                
+                <div class="controls">
+                    <div class="control-group">
+                        <label>Black Hole Mass (Solar Masses)</label>
+                        <input type="range" min="1" max="100" value="10" id="massSlider">
+                        <div class="value-display">Mass: <span id="massValue">10</span> M☉</div>
+                    </div>
+                    <div class="control-group">
+                        <label>Viewer Distance (km)</label>
+                        <input type="range" min="50" max="500" value="200" id="distanceSlider">
+                        <div class="value-display">Distance: <span id="distanceValue">200</span> km</div>
+                    </div>
+                </div>
 
-    <!-- Info Panel -->
-    <div class="info-panel">
-        <h2>Black Hole Physics</h2>
-        <p><strong>Event Horizon:</strong> The point of no return where escape velocity exceeds light speed.</p>
-        <p><strong>Accretion Disk:</strong> Matter spiraling inward, heated to millions of degrees, emitting intense radiation.</p>
-        <p><strong>Gravitational Lensing:</strong> Light bending around the massive object, distorting spacetime itself.</p>
-    </div>
+                <canvas id="simulator" class="demo-canvas"></canvas>
 
-    <!-- Achievement -->
-    <div class="achievement" id="achievement">
-        <strong>🏆 Achievement!</strong><br>
-        <span id="achievementText"></span>
-    </div>
+                <div class="grid-2" style="margin-top: 1.5rem;">
+                    <div style="color: #b8b8d4;">
+                        <strong style="color: var(--accent);">Event Horizon Radius:</strong><br>
+                        <span id="radiusDisplay">29.5 km</span>
+                    </div>
+                    <div style="color: #b8b8d4;">
+                        <strong style="color: var(--accent);">Time Dilation Factor:</strong><br>
+                        <span id="timeDilationDisplay">1.00x</span>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <!-- Tutorial Overlay -->
-    <div class="tutorial-overlay" id="tutorialOverlay">
-        <div class="tutorial-content">
-            <h2>Welcome to Black Hole Simulation!</h2>
-            <p>🌌 Watch particles get pulled into the gravitational well</p>
-            <p>⚙️ Use the controls to adjust gravity, particle rate, and size</p>
-            <p>✨ Try adding particle bursts or a second black hole</p>
-            <p>🎯 Experiment with visual effects for different perspectives</p>
-            <button class="btn" onclick="closeTutorial()">Got It!</button>
+        <div class="section">
+            <h2>Types of Black Holes</h2>
+            <div class="grid-2">
+                <div class="info-card">
+                    <h3>🌟 Stellar Black Holes</h3>
+                    <p><strong>Mass:</strong> 3-100 solar masses<br>
+                    <strong>Formation:</strong> Collapse of massive stars<br>
+                    <strong>Size:</strong> Event horizon ~3-300 km</p>
+                </div>
+                <div class="info-card">
+                    <h3>🌌 Supermassive Black Holes</h3>
+                    <p><strong>Mass:</strong> Millions to billions of solar masses<br>
+                    <strong>Location:</strong> Centers of galaxies<br>
+                    <strong>Size:</strong> Can be larger than our solar system</p>
+                </div>
+                <div class="info-card">
+                    <h3>⭐ Intermediate Black Holes</h3>
+                    <p><strong>Mass:</strong> 100-100,000 solar masses<br>
+                    <strong>Formation:</strong> Still mysterious<br>
+                    <strong>Rarity:</strong> Very few confirmed</p>
+                </div>
+                <div class="info-card">
+                    <h3>🔬 Primordial Black Holes</h3>
+                    <p><strong>Mass:</strong> Varies widely<br>
+                    <strong>Formation:</strong> Early universe density fluctuations<br>
+                    <strong>Status:</strong> Theoretical (not yet detected)</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Journey to a Black Hole</h2>
+            <p>Imagine you're falling into a stellar-mass black hole. Here's what you'd experience:</p>
+            
+            <div style="margin-top: 2rem; line-height: 2;">
+                <p><strong style="color: var(--accent);">Far Away (1000 km):</strong> The black hole appears as a dark sphere, surrounded by a brilliant accretion disk.</p>
+                
+                <p><strong style="color: var(--accent);">Approaching (100 km):</strong> Tidal forces begin to stretch you—your feet feel stronger gravity than your head.</p>
+                
+                <p><strong style="color: var(--accent);">Near Horizon (10 km):</strong> Time dilation becomes extreme. The universe seems to speed up around you.</p>
+                
+                <p><strong style="color: var(--accent);">At Horizon:</strong> To outside observers, you appear frozen. But you feel nothing special as you cross.</p>
+                
+                <p><strong style="color: var(--accent);">Inside:</strong> All paths lead to the singularity. Space and time have swapped roles—you move through time toward the center.</p>
+            </div>
         </div>
     </div>
 
     <script>
-        const canvas = document.getElementById('bhCanvas');
-        const ctx = canvas.getContext('2d');
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+        }
 
+        // Black hole background animation
+        const canvas = document.getElementById('blackhole-canvas');
+        const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
-        // Game State
-        let blackHoles = [{
-            x: canvas.width / 2,
-            y: canvas.height / 2,
-            radius: 30,
-            mass: 5000
-        }];
-
-        let particles = [];
-        let absorbedCount = 0;
-        let particleRate = 3;
-        let effects = {
-            lensing: true,
-            disk: true,
-            trails: true
-        };
-
-        // FPS Counter
-        let lastTime = performance.now();
-        let fps = 60;
-
-        // Particle Class
-        class Particle {
-            constructor(blackHole = blackHoles[0]) {
-                const angle = Math.random() * Math.PI * 2;
-                const distance = 200 + Math.random() * 300;
-                this.x = blackHole.x + Math.cos(angle) * distance;
-                this.y = blackHole.y + Math.sin(angle) * distance;
-                this.vx = Math.sin(angle) * 2;
-                this.vy = -Math.cos(angle) * 2;
-                this.radius = 2 + Math.random() * 2;
-                this.hue = Math.random() * 60 + 180;
-                this.life = 1;
-                this.trail = [];
-            }
-
-            update() {
-                blackHoles.forEach(bh => {
-                    const dx = bh.x - this.x;
-                    const dy = bh.y - this.y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-
-                    if (dist < bh.radius) {
-                        this.life = 0;
-                        absorbedCount++;
-                        checkAchievements();
-                        return;
-                    }
-
-                    const force = bh.mass / (dist * dist);
-                    const ax = (dx / dist) * force;
-                    const ay = (dy / dist) * force;
-
-                    this.vx += ax * 0.01;
-                    this.vy += ay * 0.01;
-                });
-
-                this.x += this.vx;
-                this.y += this.vy;
-
-                if (effects.trails) {
-                    this.trail.push({ x: this.x, y: this.y });
-                    if (this.trail.length > 20) this.trail.shift();
-                }
-
-                const distToNearest = Math.min(...blackHoles.map(bh => {
-                    const dx = bh.x - this.x;
-                    const dy = bh.y - this.y;
-                    return Math.sqrt(dx * dx + dy * dy);
-                }));
-
-                if (distToNearest < 100) {
-                    this.life -= 0.02;
-                }
-            }
-
-            draw() {
-                if (!this.active) return;
-
-                // Draw trail
-                if (effects.trails && this.trail.length > 1) {
-                    ctx.beginPath();
-                    ctx.moveTo(this.trail[0].x, this.trail[0].y);
-                    for (let i = 1; i < this.trail.length; i++) {
-                        ctx.lineTo(this.trail[i].x, this.trail[i].y);
-                    }
-                    ctx.strokeStyle = `hsla(${this.hue}, 100%, 50%, 0.2)`;
-                    ctx.lineWidth = 1;
-                    ctx.stroke();
-                }
-
-                const distToNearest = Math.min(...blackHoles.map(bh => {
-                    const dx = bh.x - this.x;
-                    const dy = bh.y - this.y;
-                    return Math.sqrt(dx * dx + dy * dy);
-                }));
-                const brightness = Math.min(1, 200 / distToNearest);
-
-                ctx.save();
-                ctx.shadowBlur = 20;
-                ctx.shadowColor = `hsl(${this.hue}, 100%, 50%)`;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = `hsla(${this.hue}, 100%, ${50 + brightness * 50}%, ${this.life})`;
-                ctx.fill();
-                ctx.restore();
-            }
+        const particles = [];
+        for (let i = 0; i < 100; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 2,
+                speedX: (Math.random() - 0.5) * 0.5,
+                speedY: (Math.random() - 0.5) * 0.5
+            });
         }
 
-        function initParticles() {
-            for (let i = 0; i < 100; i++) {
-                particles.push(new Particle());
-            }
-        }
-
-        function addParticleBurst() {
-            for (let i = 0; i < 50; i++) {
-                particles.push(new Particle(blackHoles[Math.floor(Math.random() * blackHoles.length)]));
-            }
-            showAchievement('Particle Burst Added! 🌟');
-        }
-
-        function createSecondBlackHole() {
-            if (blackHoles.length < 2) {
-                blackHoles.push({
-                    x: canvas.width * 0.7,
-                    y: canvas.height * 0.5,
-                    radius: 25,
-                    mass: 4000
-                });
-                showAchievement('Binary Black Hole System Created! 🌌');
-            }
-        }
-
-        function updateGravity(value) {
-            blackHoles[0].mass = parseInt(value);
-            document.getElementById('gravityValue').textContent = value;
-        }
-
-        function updateRate(value) {
-            particleRate = parseInt(value);
-            document.getElementById('rateValue').textContent = value + ' /sec';
-        }
-
-        function updateSize(value) {
-            blackHoles[0].radius = parseInt(value);
-            document.getElementById('sizeValue').textContent = value + ' px';
-        }
-
-        function toggleEffect(element, effect) {
-            element.classList.toggle('active');
-            effects[effect] = element.classList.contains('active');
-        }
-
-        function reset() {
-            particles = [];
-            absorbedCount = 0;
-            blackHoles = [{
-                x: canvas.width / 2,
-                y: canvas.height / 2,
-                radius: 30,
-                mass: 5000
-            }];
-            initParticles();
-            showAchievement('Simulation Reset! 🔄');
-        }
-
-        function drawBlackHole(bh) {
-            // Gravitational lensing effect
-            if (effects.lensing) {
-                const gradient = ctx.createRadialGradient(bh.x, bh.y, 0, bh.x, bh.y, bh.radius * 3);
-                gradient.addColorStop(0, '#000');
-                gradient.addColorStop(0.3, '#1a0033');
-                gradient.addColorStop(0.6, '#330066');
-                gradient.addColorStop(1, 'transparent');
-
-                ctx.beginPath();
-                ctx.arc(bh.x, bh.y, bh.radius * 3, 0, Math.PI * 2);
-                ctx.fillStyle = gradient;
-                ctx.fill();
-            }
-
-            // Accretion disk
-            if (effects.disk) {
-                for (let i = 0; i < 3; i++) {
-                    ctx.save();
-                    ctx.translate(bh.x, bh.y);
-                    ctx.rotate(Date.now() * 0.001 + i);
-                    ctx.beginPath();
-                    ctx.ellipse(0, 0, bh.radius * 2.5, bh.radius * 1.5, 0, 0, Math.PI * 2);
-                    ctx.strokeStyle = `hsla(${280 + i * 20}, 70%, 50%, 0.2)`;
-                    ctx.lineWidth = 3;
-                    ctx.stroke();
-                    ctx.restore();
-                }
-            }
-
-            // Event horizon
-            ctx.beginPath();
-            ctx.arc(bh.x, bh.y, bh.radius, 0, Math.PI * 2);
-            ctx.fillStyle = '#000';
-            ctx.fill();
-            ctx.strokeStyle = 'rgba(138, 43, 226, 0.8)';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-
-            // Schwarzschild radius indicator
-            ctx.beginPath();
-            ctx.arc(bh.x, bh.y, bh.radius * 1.5, 0, Math.PI * 2);
-            ctx.strokeStyle = 'rgba(138, 43, 226, 0.3)';
-            ctx.lineWidth = 1;
-            ctx.setLineDash([5, 5]);
-            ctx.stroke();
-            ctx.setLineDash([]);
-        }
-
-        let particleTimer = 0;
-        function animate(currentTime) {
-            // Calculate FPS
-            const deltaTime = currentTime - lastTime;
-            fps = Math.round(1000 / deltaTime);
-            lastTime = currentTime;
-
-            // Clear with trails effect
-            if (effects.trails) {
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-            } else {
-                ctx.fillStyle = 'rgba(0, 0, 0, 1)';
-            }
+        function animateBackground() {
+            ctx.fillStyle = 'rgba(10, 10, 26, 0.1)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Draw black holes
-            blackHoles.forEach(bh => drawBlackHole(bh));
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
 
-            // Update and draw particles
-            particles = particles.filter(p => p.life > 0);
-            particles.forEach(particle => {
-                particle.update();
-                particle.draw();
-            });
-
-            // Add new particles based on rate
-            particleTimer += deltaTime;
-            if (particleTimer > 1000 / particleRate) {
-                particles.push(new Particle(blackHoles[Math.floor(Math.random() * blackHoles.length)]));
-                particleTimer = 0;
-            }
-
-            // Update stats
-            document.getElementById('particleCount').textContent = particles.length;
-            document.getElementById('absorbedCount').textContent = absorbedCount;
-            document.getElementById('fps').textContent = fps;
-
-            requestAnimationFrame(animate);
-        }
-
-        // Achievements
-        const achievements = [
-            { id: 'first100', count: 100, text: 'First 100 particles absorbed!' },
-            { id: 'first500', count: 500, text: 'Black hole growing stronger!' },
-            { id: 'first1000', count: 1000, text: 'Reached 1000 absorbed particles!' }
-        ];
-        const unlockedAchievements = new Set();
-
-        function checkAchievements() {
-            achievements.forEach(ach => {
-                if (absorbedCount >= ach.count && !unlockedAchievements.has(ach.id)) {
-                    unlockedAchievements.add(ach.id);
-                    showAchievement(ach.text);
+            particles.forEach(p => {
+                const dx = centerX - p.x;
+                const dy = centerY - p.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                
+                if (dist < 200) {
+                    p.speedX += dx * 0.00005;
+                    p.speedY += dy * 0.00005;
                 }
+
+                p.x += p.speedX;
+                p.y += p.speedY;
+
+                if (dist < 50) {
+                    p.x = Math.random() * canvas.width;
+                    p.y = Math.random() * canvas.height;
+                    p.speedX = (Math.random() - 0.5) * 0.5;
+                    p.speedY = (Math.random() - 0.5) * 0.5;
+                }
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(138, 43, 226, 0.8)';
+                ctx.fill();
             });
+
+            const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 150);
+            gradient.addColorStop(0, 'rgba(0, 0, 0, 1)');
+            gradient.addColorStop(0.5, 'rgba(138, 43, 226, 0.3)');
+            gradient.addColorStop(1, 'rgba(138, 43, 226, 0)');
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            requestAnimationFrame(animateBackground);
         }
 
-        function showAchievement(text) {
-            const achievement = document.getElementById('achievement');
-            document.getElementById('achievementText').textContent = text;
-            achievement.classList.add('show');
-            setTimeout(() => achievement.classList.remove('show'), 4000);
+        // Simulator
+        const simCanvas = document.getElementById('simulator');
+        const simCtx = simCanvas.getContext('2d');
+        simCanvas.width = simCanvas.offsetWidth;
+        simCanvas.height = 400;
+
+        const massSlider = document.getElementById('massSlider');
+        const distanceSlider = document.getElementById('distanceSlider');
+
+        function updateSimulator() {
+            const mass = parseFloat(massSlider.value);
+            const distance = parseFloat(distanceSlider.value);
+            
+            const schwarzschildRadius = 2.95 * mass; // in km
+            const timeDilation = 1 / Math.sqrt(1 - schwarzschildRadius / distance);
+            
+            document.getElementById('massValue').textContent = mass;
+            document.getElementById('distanceValue').textContent = distance;
+            document.getElementById('radiusDisplay').textContent = schwarzschildRadius.toFixed(2) + ' km';
+            document.getElementById('timeDilationDisplay').textContent = timeDilation.toFixed(2) + 'x';
+            
+            drawBlackHole(mass, distance, schwarzschildRadius);
         }
 
-        // Tutorial
-        function showTutorial() {
-            document.getElementById('tutorialOverlay').classList.add('active');
+        function drawBlackHole(mass, distance, radius) {
+            simCtx.fillStyle = '#000';
+            simCtx.fillRect(0, 0, simCanvas.width, simCanvas.height);
+            
+            const centerX = simCanvas.width / 2;
+            const centerY = simCanvas.height / 2;
+            const scale = 1.5;
+            const bhRadius = radius * scale;
+            
+            const gradient = simCtx.createRadialGradient(centerX, centerY, 0, centerX, centerY, bhRadius * 3);
+            gradient.addColorStop(0, 'rgba(0, 0, 0, 1)');
+            gradient.addColorStop(0.3, 'rgba(138, 43, 226, 0.6)');
+            gradient.addColorStop(0.6, 'rgba(240, 147, 251, 0.3)');
+            gradient.addColorStop(1, 'rgba(240, 147, 251, 0)');
+            
+            simCtx.fillStyle = gradient;
+            simCtx.beginPath();
+            simCtx.arc(centerX, centerY, bhRadius * 3, 0, Math.PI * 2);
+            simCtx.fill();
+            
+            simCtx.fillStyle = '#000';
+            simCtx.beginPath();
+            simCtx.arc(centerX, centerY, bhRadius, 0, Math.PI * 2);
+            simCtx.fill();
+            
+            simCtx.strokeStyle = 'rgba(138, 43, 226, 0.8)';
+            simCtx.lineWidth = 2;
+            simCtx.beginPath();
+            simCtx.arc(centerX, centerY, bhRadius, 0, Math.PI * 2);
+            simCtx.stroke();
+            
+            for (let i = 0; i < 50; i++) {
+                const angle = (i / 50) * Math.PI * 2;
+                const dist = bhRadius * 2 + Math.random() * 50;
+                const x = centerX + Math.cos(angle) * dist;
+                const y = centerY + Math.sin(angle) * dist;
+                
+                simCtx.fillStyle = 'rgba(240, 147, 251, 0.6)';
+                simCtx.beginPath();
+                simCtx.arc(x, y, 2, 0, Math.PI * 2);
+                simCtx.fill();
+            }
         }
 
-        function closeTutorial() {
-            document.getElementById('tutorialOverlay').classList.remove('active');
-        }
+        massSlider.addEventListener('input', updateSimulator);
+        distanceSlider.addEventListener('input', updateSimulator);
 
-        // Show tutorial on first visit
-        if (!localStorage.getItem('bhTutorialSeen')) {
-            setTimeout(showTutorial, 1000);
-            localStorage.setItem('bhTutorialSeen', 'true');
-        }
-
-        // Initialize
-        initParticles();
-        animate(performance.now());
-
-        // Resize handler
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            blackHoles[0].x = canvas.width / 2;
-            blackHoles[0].y = canvas.height / 2;
         });
 
-        // Keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-            if (e.key === ' ') addParticleBurst();
-            if (e.key === 'r') reset();
-            if (e.key === 'h') showTutorial();
+        window.addEventListener('load', () => {
+            animateBackground();
+            updateSimulator();
         });
     </script>
 </body>

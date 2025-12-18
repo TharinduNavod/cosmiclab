@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quantum Realm - CosmicLab</title>
+    <title>Quantum Mechanics - CosmicLab</title>
     <style>
         * {
             margin: 0;
@@ -11,25 +11,61 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --accent: #f093fb;
+            --quantum-blue: #00d4ff;
+            --quantum-purple: #b537f2;
+            --dark: #0a0a1a;
+            --light: #fff;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0a0a1a 0%, #0d1b2a 100%);
-            color: #fff;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a0f2e 50%, #0f0a1e 100%);
+            color: var(--light);
             overflow-x: hidden;
+        }
+
+        body.light-mode {
+            background: linear-gradient(135deg, #f0f4ff 0%, #e8f0ff 100%);
+            color: #1a1a2e;
+        }
+
+        #quantum-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
         }
 
         nav {
             position: fixed;
             top: 0;
             width: 100%;
-            padding: 1.5rem 3rem;
+            padding: 1rem 3rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(10, 10, 26, 0.8);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
-            z-index: 100;
+            background: rgba(10, 10, 26, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+            z-index: 1000;
+        }
+
+        body.light-mode nav {
+            background: rgba(255, 255, 255, 0.85);
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4ff 0%, #b537f2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .nav-links {
@@ -38,7 +74,7 @@
         }
 
         nav a {
-            color: #fff;
+            color: var(--light);
             text-decoration: none;
             font-weight: 500;
             padding: 0.5rem 1.5rem;
@@ -46,650 +82,620 @@
             transition: all 0.3s ease;
         }
 
+        body.light-mode nav a {
+            color: #1a1a2e;
+        }
+
         nav a:hover {
-            background: rgba(0, 255, 255, 0.2);
-            transform: translateY(-2px);
+            background: rgba(0, 212, 255, 0.2);
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(0, 212, 255, 0.2);
+            border: none;
+            color: var(--light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        body.light-mode .icon-btn {
+            color: #1a1a2e;
+        }
+
+        .icon-btn:hover {
+            background: rgba(0, 212, 255, 0.4);
+            transform: scale(1.1);
         }
 
         .container {
-            max-width: 1600px;
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 8rem 2rem 4rem;
         }
 
         h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
             text-align: center;
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, #00ffff 0%, #0099ff 100%);
+            background: linear-gradient(135deg, #00d4ff 0%, #b537f2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: glow 2s ease-in-out infinite;
+            margin-bottom: 2rem;
         }
 
-        @keyframes glow {
-            0%, 100% { filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.5)); }
-            50% { filter: drop-shadow(0 0 40px rgba(0, 255, 255, 0.8)); }
-        }
-
-        .subtitle {
+        .intro {
             text-align: center;
-            color: #8ecae6;
-            margin-bottom: 3rem;
+            max-width: 800px;
+            margin: 0 auto 4rem;
             font-size: 1.2rem;
+            color: #b8b8d4;
+            line-height: 1.8;
         }
 
-        .canvas-container {
-            position: relative;
-            margin: 2rem auto;
-            border: 2px solid rgba(0, 255, 255, 0.3);
-            border-radius: 15px;
-            background: rgba(0, 0, 0, 0.5);
-            box-shadow: 0 10px 40px rgba(0, 255, 255, 0.3);
-            overflow: hidden;
+        body.light-mode .intro {
+            color: #6c757d;
         }
 
-        #slitCanvas {
-            display: block;
-            width: 100%;
-            max-width: 900px;
-            height: auto;
+        .section {
+            background: rgba(26, 10, 46, 0.6);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            backdrop-filter: blur(10px);
         }
 
-        .control-panel {
-            background: rgba(13, 27, 42, 0.8);
-            border: 1px solid rgba(0, 255, 255, 0.3);
+        body.light-mode .section {
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .section h2 {
+            color: var(--quantum-blue);
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+        }
+
+        .section p {
+            color: #b8b8d4;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        body.light-mode .section p {
+            color: #6c757d;
+        }
+
+        .quantum-principle {
+            background: rgba(0, 212, 255, 0.1);
+            border-left: 4px solid var(--quantum-blue);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 10px;
+        }
+
+        body.light-mode .quantum-principle {
+            background: rgba(0, 212, 255, 0.05);
+        }
+
+        .quantum-principle h3 {
+            color: var(--quantum-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .interactive-demo {
+            background: rgba(10, 10, 26, 0.8);
+            border: 2px solid rgba(0, 212, 255, 0.5);
             border-radius: 20px;
             padding: 2rem;
             margin: 2rem 0;
         }
 
-        .controls-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+        body.light-mode .interactive-demo {
+            background: rgba(248, 249, 250, 0.9);
         }
 
-        .control-group {
-            background: rgba(13, 27, 42, 0.6);
-            padding: 1.5rem;
+        .demo-canvas {
+            width: 100%;
+            height: 400px;
+            background: #000;
             border-radius: 15px;
-            border: 1px solid rgba(0, 255, 255, 0.2);
-        }
-
-        .control-group h3 {
-            color: #00ffff;
-            margin-bottom: 1rem;
-            font-size: 1.2rem;
-        }
-
-        .control-item {
             margin: 1rem 0;
         }
 
-        .control-item label {
-            display: block;
-            color: #8ecae6;
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
+        .experiment-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
         }
 
-        .slider {
-            width: 100%;
-            height: 6px;
-            border-radius: 5px;
-            background: linear-gradient(to right, #00ffff, #0099ff);
-            outline: none;
-            -webkit-appearance: none;
-        }
-
-        .slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: #00ffff;
+        .experiment-btn {
+            padding: 1.5rem;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 15px;
+            color: var(--light);
             cursor: pointer;
-            box-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
-        }
-
-        .slider::-moz-range-thumb {
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: #00ffff;
-            cursor: pointer;
-            border: none;
-        }
-
-        .value-display {
-            color: #00ffff;
-            font-weight: bold;
-            margin-top: 0.5rem;
+            transition: all 0.3s ease;
             text-align: center;
         }
 
-        .button-controls {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            justify-content: center;
+        body.light-mode .experiment-btn {
+            color: #1a1a2e;
         }
 
-        .btn {
-            padding: 1rem 2rem;
-            background: linear-gradient(135deg, #00ffff 0%, #0099ff 100%);
-            color: #0a0a1a;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 1rem;
-            transition: all 0.3s ease;
+        .experiment-btn:hover {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: var(--quantum-blue);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
         }
 
-        .btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 25px rgba(0, 255, 255, 0.5);
+        .experiment-btn.active {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(181, 55, 242, 0.3));
+            border-color: var(--quantum-blue);
         }
 
-        .btn-secondary {
-            background: rgba(13, 27, 42, 0.8);
-            color: #00ffff;
-            border: 2px solid #00ffff;
-        }
-
-        .toggle-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
-            background: rgba(13, 27, 42, 0.6);
-            padding: 1rem 1.5rem;
-            border-radius: 15px;
-            border: 1px solid rgba(0, 255, 255, 0.3);
-        }
-
-        .toggle {
-            position: relative;
-            width: 60px;
-            height: 30px;
-            background: #333;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .toggle.active {
-            background: linear-gradient(135deg, #00ffff 0%, #0099ff 100%);
-        }
-
-        .toggle::after {
-            content: '';
-            position: absolute;
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            background: white;
-            top: 2px;
-            left: 2px;
-            transition: left 0.3s;
-        }
-
-        .toggle.active::after {
-            left: 32px;
-        }
-
-        .info-grid {
+        .grid-2 {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
             margin: 2rem 0;
         }
 
-        .info-box {
-            background: rgba(13, 27, 42, 0.8);
-            border: 1px solid rgba(0, 255, 255, 0.3);
-            border-radius: 20px;
+        .info-card {
+            background: rgba(10, 10, 26, 0.8);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 15px;
             padding: 2rem;
             transition: all 0.3s ease;
         }
 
-        .info-box:hover {
+        body.light-mode .info-card {
+            background: rgba(248, 249, 250, 0.9);
+        }
+
+        .info-card:hover {
             transform: translateY(-5px);
-            border-color: #00ffff;
+            border-color: var(--quantum-blue);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
         }
 
-        .info-box h2 {
-            color: #00ffff;
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-        }
-
-        .info-box p {
-            color: #8ecae6;
-            line-height: 1.8;
+        .info-card h3 {
+            color: var(--quantum-blue);
             margin-bottom: 1rem;
         }
 
-        .stats-display {
-            position: fixed;
-            top: 5rem;
-            right: 2rem;
-            background: rgba(13, 27, 42, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(0, 255, 255, 0.5);
+        .info-card p {
+            color: #b8b8d4;
+            line-height: 1.6;
+        }
+
+        body.light-mode .info-card p {
+            color: #6c757d;
+        }
+
+        .measurement-box {
+            background: rgba(181, 55, 242, 0.1);
+            border: 2px dashed var(--quantum-purple);
             border-radius: 15px;
-            padding: 1.5rem;
-            z-index: 10;
-            min-width: 200px;
-        }
-
-        .stat-item {
-            display: flex;
-            justify-content: space-between;
-            margin: 0.8rem 0;
-            color: #8ecae6;
-        }
-
-        .stat-value {
-            color: #00ffff;
-            font-weight: bold;
-        }
-
-        .achievement {
-            position: fixed;
-            top: 5rem;
-            left: 50%;
-            transform: translateX(-50%) translateY(-150px);
-            background: linear-gradient(135deg, #00ffff 0%, #0099ff 100%);
-            padding: 1.5rem 2rem;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0, 255, 255, 0.8);
-            z-index: 1001;
-            transition: transform 0.5s ease;
+            padding: 2rem;
+            margin: 2rem 0;
             text-align: center;
         }
 
-        .achievement.show {
-            transform: translateX(-50%) translateY(0);
+        body.light-mode .measurement-box {
+            background: rgba(181, 55, 242, 0.05);
+        }
+
+        .measurement-result {
+            font-size: 2rem;
+            color: var(--quantum-purple);
+            margin: 1rem 0;
+            font-weight: bold;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--quantum-blue), var(--quantum-purple));
+            color: var(--light);
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.5);
         }
 
         @media (max-width: 768px) {
-            .container {
-                padding: 6rem 1rem 2rem;
-            }
-            .controls-grid {
-                grid-template-columns: 1fr;
-            }
-            .stats-display {
-                position: relative;
-                top: 0;
-                right: 0;
-                margin: 2rem auto;
-            }
             nav {
-                padding: 1rem;
+                padding: 1rem 1.5rem;
             }
+            
             .nav-links {
-                gap: 0.5rem;
+                display: none;
             }
-            nav a {
-                padding: 0.5rem 0.8rem;
-                font-size: 0.9rem;
+            
+            .section {
+                padding: 2rem 1.5rem;
             }
         }
     </style>
 </head>
 <body>
+    <canvas id="quantum-canvas"></canvas>
+
     <nav>
+        <div class="nav-brand">⚛️ CosmicLab</div>
         <div class="nav-links">
-            <a href="index.html">🏠 Home</a>
-            <a href="blackholes.html">🌌 Black Holes</a>
-            <a href="quantum.html">⚛️ Quantum</a>
-            <a href="universe.html">🌠 Universe</a>
+            <a href="index.html">Home</a>
+            <a href="blackholes.html">Black Holes</a>
+            <a href="quantum.html">Quantum</a>
+            <a href="universe.html">Universe</a>
         </div>
+        <button class="icon-btn" onclick="toggleTheme()">🌓</button>
     </nav>
 
-    <div class="stats-display">
-        <h3 style="color: #00ffff; margin-bottom: 1rem; text-align: center;">Stats</h3>
-        <div class="stat-item">
-            <span>Fired:</span>
-            <span class="stat-value" id="particlesFired">0</span>
-        </div>
-        <div class="stat-item">
-            <span>Detected:</span>
-            <span class="stat-value" id="detectionCount">0</span>
-        </div>
-        <div class="stat-item">
-            <span>Mode:</span>
-            <span class="stat-value" id="currentMode">Wave</span>
-        </div>
-    </div>
-
-    <div class="achievement" id="achievement">
-        <strong>🏆 Achievement!</strong><br>
-        <span id="achievementText"></span>
-    </div>
-
     <div class="container">
-        <h1>Double-Slit Experiment</h1>
-        <p class="subtitle">Witness the wave-particle duality of quantum mechanics</p>
-
-        <div class="canvas-container">
-            <canvas id="slitCanvas" width="900" height="500"></canvas>
+        <h1>⚛️ Quantum Mechanics</h1>
+        
+        <div class="intro">
+            Welcome to the bizarre world of quantum mechanics, where particles exist in multiple states at once, observation changes reality, and nature plays dice at its fundamental level.
         </div>
 
-        <div class="control-panel">
-            <div class="controls-grid">
-                <div class="control-group">
-                    <h3>Particle Properties</h3>
-                    <div class="control-item">
-                        <label>Speed</label>
-                        <input type="range" class="slider" id="speedSlider" min="2" max="8" value="4" oninput="updateSpeed(this.value)">
-                        <div class="value-display" id="speedValue">4</div>
-                    </div>
-                    <div class="control-item">
-                        <label>Wave Amplitude</label>
-                        <input type="range" class="slider" id="amplitudeSlider" min="0" max="60" value="40" oninput="updateAmplitude(this.value)">
-                        <div class="value-display" id="amplitudeValue">40</div>
-                    </div>
-                </div>
-
-                <div class="control-group">
-                    <h3>Experiment Settings</h3>
-                    <div class="control-item">
-                        <label>Slit Width</label>
-                        <input type="range" class="slider" id="slitSlider" min="10" max="30" value="20" oninput="updateSlitWidth(this.value)">
-                        <div class="value-display" id="slitValue">20</div>
-                    </div>
-                    <div class="control-item">
-                        <label>Fire Rate (ms)</label>
-                        <input type="range" class="slider" id="rateSlider" min="50" max="500" value="200" oninput="updateRate(this.value)">
-                        <div class="value-display" id="rateValue">200</div>
-                    </div>
-                </div>
-
-                <div class="control-group">
-                    <h3>Observation Mode</h3>
-                    <div class="toggle-container">
-                        <span style="color: #8ecae6; font-weight: 500;">👁️ Observe Slit</span>
-                        <div class="toggle" id="observeToggle" onclick="toggleObservation(this)"></div>
-                    </div>
-                    <p style="color: #8ecae6; margin-top: 1rem; font-size: 0.9rem;">
-                        Observation changes pattern!
-                    </p>
-                </div>
+        <div class="section">
+            <h2>The Quantum Revolution</h2>
+            <p>Quantum mechanics describes the behavior of matter and energy at the atomic and subatomic scale. At this level, classical physics breaks down, and reality operates by entirely different rules.</p>
+            
+            <div class="quantum-principle">
+                <h3>🎲 Wave-Particle Duality</h3>
+                <p>Everything has both wave and particle properties. An electron can behave as a particle when detected, but travels as a wave of probability.</p>
             </div>
 
-            <div class="button-controls">
-                <button class="btn" onclick="fireParticle()">🎯 Fire Particle</button>
-                <button class="btn" onclick="startContinuous()">▶️ Continuous</button>
-                <button class="btn btn-secondary" onclick="stopContinuous()">⏸️ Stop</button>
-                <button class="btn btn-secondary" onclick="clearScreen()">🗑️ Clear</button>
+            <div class="quantum-principle">
+                <h3>👁️ The Observer Effect</h3>
+                <p>The act of measurement affects quantum systems. Before observation, particles exist in superposition—multiple states simultaneously.</p>
+            </div>
+
+            <div class="quantum-principle">
+                <h3>🔗 Quantum Entanglement</h3>
+                <p>Particles can become "entangled," instantly affecting each other regardless of distance. Einstein called this "spooky action at a distance."</p>
+            </div>
+
+            <div class="quantum-principle">
+                <h3>❓ Heisenberg Uncertainty</h3>
+                <p>You cannot know both a particle's exact position and momentum simultaneously. The more precisely you know one, the less you know the other.</p>
             </div>
         </div>
 
-        <div class="info-grid">
-            <div class="info-box">
-                <h2>🌊 Wave Behavior</h2>
-                <p>Unobserved particles behave as waves, creating interference patterns with multiple bands.</p>
-                <p><strong>Key:</strong> Particle passes through both slits as a probability wave.</p>
-            </div>
+        <div class="section">
+            <h2>Interactive Quantum Experiments</h2>
+            <div class="interactive-demo">
+                <p style="color: #b8b8d4; margin-bottom: 1rem;">Choose an experiment to explore quantum behavior:</p>
+                
+                <div class="experiment-buttons">
+                    <button class="experiment-btn active" onclick="runExperiment('double-slit')">
+                        <div style="font-size: 2rem;">〰️</div>
+                        Double-Slit<br>Experiment
+                    </button>
+                    <button class="experiment-btn" onclick="runExperiment('superposition')">
+                        <div style="font-size: 2rem;">🎭</div>
+                        Quantum<br>Superposition
+                    </button>
+                    <button class="experiment-btn" onclick="runExperiment('measurement')">
+                        <div style="font-size: 2rem;">📏</div>
+                        Wave Function<br>Collapse
+                    </button>
+                    <button class="experiment-btn" onclick="runExperiment('tunneling')">
+                        <div style="font-size: 2rem;">🚇</div>
+                        Quantum<br>Tunneling
+                    </button>
+                </div>
 
-            <div class="info-box">
-                <h2>⚫ Particle Behavior</h2>
-                <p>When observed, wave function collapses. Interference pattern disappears!</p>
-                <p><strong>Key:</strong> Measurement changes quantum behavior.</p>
-            </div>
+                <canvas id="experiment-canvas" class="demo-canvas"></canvas>
 
-            <div class="info-box">
-                <h2>🎯 The Mystery</h2>
-                <p>This demonstrates quantum mechanics' profound principle: observation affects reality.</p>
-                <p><strong>Key:</strong> Particles exist in superposition before measurement.</p>
+                <div id="experimentInfo" style="color: #b8b8d4; margin-top: 1.5rem; line-height: 1.8;">
+                    <strong style="color: var(--quantum-blue);">Double-Slit Experiment:</strong><br>
+                    Particles shot through two slits create an interference pattern, proving they travel as waves. But observe which slit they go through, and the pattern disappears!
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Quantum Measurement Simulator</h2>
+            <div class="measurement-box">
+                <h3 style="color: var(--quantum-purple);">Schrödinger's Particle</h3>
+                <p style="color: #b8b8d4; margin: 1rem 0;">
+                    This quantum particle exists in superposition. Click to measure its state and collapse the wave function!
+                </p>
+                
+                <div class="measurement-result" id="measurementResult">
+                    |ψ⟩ = α|↑⟩ + β|↓⟩
+                </div>
+                
+                <button class="btn" onclick="measureQuantumState()">
+                    Measure Quantum State
+                </button>
+                
+                <p style="color: #b8b8d4; margin-top: 1rem; font-size: 0.9rem;">
+                    Before measurement: Superposition of spin up and spin down<br>
+                    After measurement: Definite state (50% chance each)
+                </p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Key Quantum Concepts</h2>
+            <div class="grid-2">
+                <div class="info-card">
+                    <h3>🌊 Wave Functions</h3>
+                    <p>Described by the Schrödinger equation, wave functions represent the probability amplitude of finding a particle in a particular state. The square of the amplitude gives the probability.</p>
+                </div>
+                <div class="info-card">
+                    <h3>🎯 Quantum States</h3>
+                    <p>Quantum systems exist in discrete energy levels. An electron in an atom can only occupy specific orbital states, not values in between.</p>
+                </div>
+                <div class="info-card">
+                    <h3>💫 Spin</h3>
+                    <p>An intrinsic property of particles like angular momentum, but quantized. Electrons have spin ½, always measured as "up" or "down" along any axis.</p>
+                </div>
+                <div class="info-card">
+                    <h3>🔬 Quantum Tunneling</h3>
+                    <p>Particles can pass through energy barriers that classical physics says should be impenetrable. This makes nuclear fusion in stars possible!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Applications of Quantum Mechanics</h2>
+            <div class="grid-2">
+                <div class="info-card">
+                    <h3>💻 Quantum Computing</h3>
+                    <p>Uses qubits that exist in superposition, potentially solving problems exponentially faster than classical computers.</p>
+                </div>
+                <div class="info-card">
+                    <h3>🔐 Quantum Cryptography</h3>
+                    <p>Entanglement enables theoretically unbreakable encryption. Any eavesdropping attempt disturbs the quantum state.</p>
+                </div>
+                <div class="info-card">
+                    <h3>⚡ Semiconductors</h3>
+                    <p>Modern electronics rely on quantum tunneling. Every transistor in your computer uses quantum effects.</p>
+                </div>
+                <div class="info-card">
+                    <h3>🔬 Microscopy</h3>
+                    <p>Quantum tunneling microscopes can image individual atoms by detecting electrons tunneling between tip and surface.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>The Quantum Frontier</h2>
+            <p>Despite a century of success, quantum mechanics still puzzles physicists:</p>
+            
+            <div style="margin-top: 2rem; line-height: 2;">
+                <p><strong style="color: var(--quantum-blue);">Measurement Problem:</strong> Why does observation collapse the wave function? What counts as "measurement"?</p>
+                
+                <p><strong style="color: var(--quantum-blue);">Many-Worlds:</strong> Do all possible quantum outcomes occur in parallel universes?</p>
+                
+                <p><strong style="color: var(--quantum-blue);">Quantum Gravity:</strong> How do we reconcile quantum mechanics with general relativity?</p>
+                
+                <p><strong style="color: var(--quantum-blue);">Consciousness:</strong> Does consciousness play a role in quantum measurement?</p>
             </div>
         </div>
     </div>
 
     <script>
-        const canvas = document.getElementById('slitCanvas');
-        const ctx = canvas.getContext('2d');
-
-        const slits = {
-            x: 250,
-            y1: 180,
-            y2: 320,
-            width: 20
-        };
-
-        const screen = { x: 750 };
-        let particles = [];
-        let detections = [];
-        let observing = false;
-        let continuousInterval = null;
-        let particleSpeed = 4;
-        let waveAmplitude = 40;
-        let fireRate = 200;
-        let stats = { fired: 0, detected: 0 };
-
-        class Particle {
-            constructor() {
-                this.x = 50;
-                this.y = 250;
-                this.vx = particleSpeed;
-                this.path = observing ? (Math.random() < 0.5 ? 'top' : 'bottom') : 'wave';
-                this.phase = Math.random() * Math.PI * 2;
-                this.amplitude = observing ? 0 : waveAmplitude;
-                this.active = true;
-                this.color = observing ? '#ff00ff' : '#00ffff';
-                stats.fired++;
-            }
-
-            update() {
-                this.x += this.vx;
-                
-                if (!observing) {
-                    this.y = 250 + Math.sin(this.x * 0.05 + this.phase) * this.amplitude;
-                } else {
-                    this.y = this.path === 'top' ? slits.y1 + 10 : slits.y2 + 10;
-                }
-
-                if (this.x >= screen.x && this.active) {
-                    this.active = false;
-                    stats.detected++;
-                    
-                    if (observing) {
-                        detections.push({
-                            y: this.y,
-                            intensity: 1
-                        });
-                    } else {
-                        const interference = Math.sin(this.phase) * Math.cos(this.y * 0.02);
-                        detections.push({
-                            y: this.y + interference * 30,
-                            intensity: Math.abs(interference)
-                        });
-                    }
-                    checkAchievements();
-                }
-            }
-
-            draw() {
-                if (!this.active) return;
-
-                ctx.save();
-                ctx.shadowBlur = 15;
-                ctx.shadowColor = this.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, 4, 0, Math.PI * 2);
-                ctx.fillStyle = this.color;
-                ctx.fill();
-                ctx.restore();
-
-                if (this.x < slits.x && !observing) {
-                    ctx.save();
-                    ctx.globalAlpha = 0.3;
-                    ctx.strokeStyle = this.color;
-                    ctx.lineWidth = 2;
-                    ctx.beginPath();
-                    for (let i = 0; i < 5; i++) {
-                        const px = this.x - i * 4;
-                        const py = 250 + Math.sin(px * 0.05 + this.phase) * this.amplitude;
-                        if (i === 0) ctx.moveTo(px, py);
-                        else ctx.lineTo(px, py);
-                    }
-                    ctx.stroke();
-                    ctx.restore();
-                }
-            }
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
         }
 
-        function drawApparatus() {
-            ctx.fillStyle = 'rgba(10, 10, 26, 0.3)';
+        let currentExperiment = 'double-slit';
+
+        // Quantum background animation
+        const canvas = document.getElementById('quantum-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particles = [];
+        for (let i = 0; i < 150; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 2,
+                vy: (Math.random() - 0.5) * 2,
+                phase: Math.random() * Math.PI * 2
+            });
+        }
+
+        function animateBackground() {
+            ctx.fillStyle = 'rgba(10, 10, 26, 0.1)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            ctx.fillStyle = '#1a1a3a';
-            ctx.fillRect(slits.x - 5, 0, 10, slits.y1);
-            ctx.fillRect(slits.x - 5, slits.y1 + slits.width, 10, slits.y2 - slits.y1 - slits.width);
-            ctx.fillRect(slits.x - 5, slits.y2 + slits.width, 10, canvas.height - slits.y2 - slits.width);
+            particles.forEach((p, i) => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.phase += 0.02;
 
-            ctx.strokeStyle = '#00ffff';
-            ctx.lineWidth = 2;
-            ctx.strokeRect(slits.x - 5, slits.y1, 10, slits.width);
-            ctx.strokeRect(slits.x - 5, slits.y2, 10, slits.width);
+                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
 
-            ctx.strokeStyle = '#0099ff';
-            ctx.beginPath();
-            ctx.moveTo(screen.x, 0);
-            ctx.lineTo(screen.x, canvas.height);
-            ctx.stroke();
-
-            ctx.font = 'bold 14px Arial';
-            ctx.fillStyle = '#00ffff';
-            ctx.fillText('Source', 20, 30);
-            ctx.fillText('Double Slit', slits.x - 40, 30);
-            ctx.fillText('Detector', screen.x - 35, 30);
-
-            if (observing) {
-                ctx.fillStyle = '#ff00ff';
-                ctx.fillText('👁️ OBSERVING', slits.x - 50, 60);
-            }
-        }
-
-        function drawDetections() {
-            detections.forEach(d => {
+                const size = Math.sin(p.phase) * 2 + 2;
                 ctx.beginPath();
-                ctx.arc(screen.x, d.y, 2, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(0, 255, 255, ${d.intensity * 0.8})`;
+                ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+                
+                const hue = (Math.sin(p.phase) + 1) * 180;
+                ctx.fillStyle = `hsla(${hue}, 100%, 70%, 0.6)`;
                 ctx.fill();
+
+                particles.forEach((p2, j) => {
+                    if (i < j) {
+                        const dx = p2.x - p.x;
+                        const dy = p2.y - p.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (dist < 100) {
+                            ctx.beginPath();
+                            ctx.moveTo(p.x, p.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.strokeStyle = `rgba(0, 212, 255, ${0.2 * (1 - dist / 100)})`;
+                            ctx.stroke();
+                        }
+                    }
+                });
             });
+
+            requestAnimationFrame(animateBackground);
         }
 
-        function animate() {
-            drawApparatus();
-            drawDetections();
+        // Experiment simulator
+        const expCanvas = document.getElementById('experiment-canvas');
+        const expCtx = expCanvas.getContext('2d');
+        expCanvas.width = expCanvas.offsetWidth;
+        expCanvas.height = 400;
 
-            particles = particles.filter(p => p.x < canvas.width);
-            particles.forEach(p => {
-                p.update();
-                p.draw();
+        function runExperiment(type) {
+            currentExperiment = type;
+            
+            document.querySelectorAll('.experiment-btn').forEach(btn => {
+                btn.classList.remove('active');
             });
+            event.target.closest('.experiment-btn').classList.add('active');
 
-            updateStats();
-            requestAnimationFrame(animate);
+            const info = {
+                'double-slit': '<strong style="color: var(--quantum-blue);">Double-Slit Experiment:</strong><br>Particles shot through two slits create an interference pattern, proving they travel as waves. But observe which slit they go through, and the pattern disappears!',
+                'superposition': '<strong style="color: var(--quantum-blue);">Quantum Superposition:</strong><br>A quantum particle exists in multiple states simultaneously until measured. Like Schrödinger\'s cat being both alive and dead until you open the box.',
+                'measurement': '<strong style="color: var(--quantum-blue);">Wave Function Collapse:</strong><br>Before measurement, a particle is spread out as a wave of probabilities. Measurement "collapses" this into a single definite state.',
+                'tunneling': '<strong style="color: var(--quantum-blue);">Quantum Tunneling:</strong><br>Particles can pass through energy barriers they shouldn\'t classically be able to cross. It\'s like a ball rolling through a hill instead of over it!'
+            };
+            
+            document.getElementById('experimentInfo').innerHTML = info[type];
+            drawExperiment(type);
         }
 
-        function updateStats() {
-            document.getElementById('particlesFired').textContent = stats.fired;
-            document.getElementById('detectionCount').textContent = stats.detected;
-            document.getElementById('currentMode').textContent = observing ? 'Particle' : 'Wave';
-        }
+        function drawExperiment(type) {
+            expCtx.fillStyle = '#000';
+            expCtx.fillRect(0, 0, expCanvas.width, expCanvas.height);
 
-        function fireParticle() {
-            particles.push(new Particle());
-        }
-
-        function startContinuous() {
-            if (continuousInterval) return;
-            continuousInterval = setInterval(() => {
-                particles.push(new Particle());
-            }, fireRate);
-        }
-
-        function stopContinuous() {
-            if (continuousInterval) {
-                clearInterval(continuousInterval);
-                continuousInterval = null;
-            }
-        }
-
-        function clearScreen() {
-            detections = [];
-            particles = [];
-            stats.detected = 0;
-            showAchievement('Screen Cleared! 🗑️');
-        }
-
-        function toggleObservation(element) {
-            element.classList.toggle('active');
-            observing = element.classList.contains('active');
-            clearScreen();
-            stats.fired = 0;
-        }
-
-        function updateSpeed(value) {
-            particleSpeed = parseInt(value);
-            document.getElementById('speedValue').textContent = value;
-        }
-
-        function updateAmplitude(value) {
-            waveAmplitude = parseInt(value);
-            document.getElementById('amplitudeValue').textContent = value;
-        }
-
-        function updateSlitWidth(value) {
-            slits.width = parseInt(value);
-            document.getElementById('slitValue').textContent = value;
-        }
-
-        function updateRate(value) {
-            fireRate = parseInt(value);
-            document.getElementById('rateValue').textContent = value;
-            if (continuousInterval) {
-                stopContinuous();
-                startContinuous();
-            }
-        }
-
-        const achievements = [
-            { id: 'first50', count: 50, text: 'Fired 50 particles!' },
-            { id: 'first200', count: 200, text: 'Quantum explorer! 200 particles' },
-            { id: 'first500', count: 500, text: 'Quantum master! 500 particles' }
-        ];
-        const unlockedAchievements = new Set();
-
-        function checkAchievements() {
-            achievements.forEach(ach => {
-                if (stats.fired >= ach.count && !unlockedAchievements.has(ach.id)) {
-                    unlockedAchievements.add(ach.id);
-                    showAchievement(ach.text);
+            if (type === 'double-slit') {
+                const centerY = expCanvas.height / 2;
+                
+                expCtx.fillStyle = '#666';
+                expCtx.fillRect(expCanvas.width / 3, 0, 10, centerY - 40);
+                expCtx.fillRect(expCanvas.width / 3, centerY + 40, 10, expCanvas.height);
+                
+                for (let i = 0; i < 30; i++) {
+                    const x = expCanvas.width * 0.7;
+                    const y = centerY + Math.sin(i * 0.5) * 100;
+                    const intensity = Math.cos(i * 0.5) ** 2;
+                    
+                    expCtx.fillStyle = `rgba(0, 212, 255, ${intensity})`;
+                    expCtx.fillRect(x - 2, y - 5, 4, 10);
                 }
-            });
+                
+                for (let i = 0; i < 20; i++) {
+                    const x = Math.random() * expCanvas.width / 3;
+                    const y = Math.random() * expCanvas.height;
+                    
+                    expCtx.fillStyle = 'rgba(240, 147, 251, 0.8)';
+                    expCtx.beginPath();
+                    expCtx.arc(x, y, 2, 0, Math.PI * 2);
+                    expCtx.fill();
+                }
+            } else if (type === 'superposition') {
+                const centerX = expCanvas.width / 2;
+                const centerY = expCanvas.height / 2;
+                
+                expCtx.strokeStyle = 'rgba(0, 212, 255, 0.6)';
+                expCtx.lineWidth = 2;
+                expCtx.beginPath();
+                expCtx.arc(centerX, centerY - 50, 40, 0, Math.PI * 2);
+                expCtx.stroke();
+                
+                expCtx.strokeStyle = 'rgba(181, 55, 242, 0.6)';
+                expCtx.beginPath();
+                expCtx.arc(centerX, centerY + 50, 40, 0, Math.PI * 2);
+                expCtx.stroke();
+                
+                const gradient = expCtx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 100);
+                gradient.addColorStop(0, 'rgba(0, 212, 255, 0.3)');
+                gradient.addColorStop(0.5, 'rgba(181, 55, 242, 0.3)');
+                gradient.addColorStop(1, 'rgba(181, 55, 242, 0)');
+                
+                expCtx.fillStyle = gradient;
+                expCtx.fillRect(0, 0, expCanvas.width, expCanvas.height);
+            } else if (type === 'measurement') {
+                for (let x = 0; x < expCanvas.width / 2; x += 20) {
+                    const y = expCanvas.height / 2 + Math.sin(x * 0.1) * 50;
+                    
+                    expCtx.fillStyle = `rgba(0, 212, 255, ${0.5 + Math.sin(x * 0.1) * 0.3})`;
+                    expCtx.beginPath();
+                    expCtx.arc(x, y, 5, 0, Math.PI * 2);
+                    expCtx.fill();
+                }
+                
+                expCtx.fillStyle = 'rgba(255, 100, 100, 0.8)';
+                expCtx.fillRect(expCanvas.width / 2 - 2, 0, 4, expCanvas.height);
+                
+                const finalY = expCanvas.height / 2 + (Math.random() - 0.5) * 100;
+                expCtx.fillStyle = 'rgba(181, 55, 242, 0.9)';
+                expCtx.beginPath();
+                expCtx.arc(expCanvas.width * 0.75, finalY, 10, 0, Math.PI * 2);
+                expCtx.fill();
+            } else if (type === 'tunneling') {
+                expCtx.fillStyle = '#444';
+                expCtx.fillRect(expCanvas.width / 2 - 30, expCanvas.height / 3, 60, expCanvas.height / 3);
+                
+                const particleX = expCanvas.width / 3;
+                const particleY = expCanvas.height / 2;
+                
+                for (let i = 0; i < 10; i++) {
+                    const x = particleX + i * 15;
+                    const alpha = Math.exp(-i * 0.3);
+                    
+                    expCtx.fillStyle = `rgba(0, 212, 255, ${alpha})`;
+                    expCtx.beginPath();
+                    expCtx.arc(x, particleY, 8, 0, Math.PI * 2);
+                    expCtx.fill();
+                }
+                
+                expCtx.fillStyle = 'rgba(240, 147, 251, 0.9)';
+                expCtx.beginPath();
+                expCtx.arc(expCanvas.width * 0.7, particleY, 8, 0, Math.PI * 2);
+                expCtx.fill();
+            }
         }
 
-        function showAchievement(text) {
-            const achievement = document.getElementById('achievement');
-            document.getElementById('achievementText').textContent = text;
-            achievement.classList.add('show');
-            setTimeout(() => achievement.classList.remove('show'), 4000);
+        function measureQuantumState() {
+            const states = ['|↑⟩ (Spin Up)', '|↓⟩ (Spin Down)'];
+            const measured = states[Math.floor(Math.random() * states.length)];
+            
+            document.getElementById('measurementResult').textContent = measured;
+            document.getElementById('measurementResult').style.animation = 'none';
+            setTimeout(() => {
+                document.getElementById('measurementResult').style.animation = 'glow 1s ease-in-out';
+            }, 10);
         }
 
-        animate();
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === ' ') fireParticle();
-            if (e.key === 'c') clearScreen();
+        window.addEventListener('load', () => {
+            animateBackground();
+            drawExperiment('double-slit');
         });
     </script>
 </body>
