@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Realm - CosmicLab</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #0d1b2a 100%);
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 10, 26, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+            z-index: 100;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover {
+            background: rgba(0, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 8rem 2rem 4rem;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #00ffff 0%, #0099ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.5)); }
+            50% { filter: drop-shadow(0 0 40px rgba(0, 255, 255, 0.8)); }
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #8ecae6;
+            margin-bottom: 3rem;
+            font-size: 1.2rem;
+        }
+
+        .canvas-container {
+            position: relative;
+            margin: 2rem auto;
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 40px rgba(0, 255, 255, 0.3);
+            overflow: hidden;
+        }
+
+        #slitCanvas {
+            display: block;
+            width: 100%;
+            max-width: 900px;
+            height: auto;
+        }
+
+        .control-panel {
+            background: rgba(13, 27, 42, 0.8);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .control-group {
+            background: rgba(13, 27, 42, 0.6);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .control-group h3 {
+            color: #00ffff;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .control-item {
+            margin: 1rem 0;
+        }
+
+        .control-item label {
+            display: block;
+            color: #8ecae6;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 5px;
+            background: linear-gradient(to right, #00ffff, #0099ff);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #00ffff;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #00ffff;
+            cursor: pointer;
+            border: none;
+        }
+
+        .value-display {
+            color: #00ffff;
+            font-weight: bold;
+            margin-top: 0.5rem;
+            text-align: center;
+        }
+
+        .button-controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #00ffff 0%, #0099ff 100%);
+            color: #0a0a1a;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 25px rgba(0, 255, 255, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(13, 27, 42, 0.8);
+            color: #00ffff;
+            border: 2px solid #00ffff;
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            background: rgba(13, 27, 42, 0.6);
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+
+        .toggle {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: #333;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle.active {
+            background: linear-gradient(135deg, #00ffff 0%, #0099ff 100%);
+        }
+
+        .toggle::after {
+            content: '';
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: white;
+            top: 2px;
+            left: 2px;
+            transition: left 0.3s;
+        }
+
+        .toggle.active::after {
+            left: 32px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .info-box {
+            background: rgba(13, 27, 42, 0.8);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .info-box:hover {
+            transform: translateY(-5px);
+            border-color: #00ffff;
+        }
+
+        .info-box h2 {
+            color: #00ffff;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .info-box p {
+            color: #8ecae6;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .stats-display {
+            position: fixed;
+            top: 5rem;
+            right: 2rem;
+            background: rgba(13, 27, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 255, 0.5);
+            border-radius: 15px;
+            padding: 1.5rem;
+            z-index: 10;
+            min-width: 200px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 0.8rem 0;
+            color: #8ecae6;
+        }
+
+        .stat-value {
+            color: #00ffff;
+            font-weight: bold;
+        }
+
+        .achievement {
+            position: fixed;
+            top: 5rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(-150px);
+            background: linear-gradient(135deg, #00ffff 0%, #0099ff 100%);
+            padding: 1.5rem 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 255, 255, 0.8);
+            z-index: 1001;
+            transition: transform 0.5s ease;
+            text-align: center;
+        }
+
+        .achievement.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 6rem 1rem 2rem;
+            }
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+            .stats-display {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin: 2rem auto;
+            }
+            nav {
+                padding: 1rem;
+            }
+            .nav-links {
+                gap: 0.5rem;
+            }
+            nav a {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-links">
+            <a href="index.html">🏠 Home</a>
+            <a href="blackholes.html">🌌 Black Holes</a>
+            <a href="quantum.html">⚛️ Quantum</a>
+            <a href="universe.html">🌠 Universe</a>
+        </div>
+    </nav>
+
+    <div class="stats-display">
+        <h3 style="color: #00ffff; margin-bottom: 1rem; text-align: center;">Stats</h3>
+        <div class="stat-item">
+            <span>Fired:</span>
+            <span class="stat-value" id="particlesFired">0</span>
+        </div>
+        <div class="stat-item">
+            <span>Detected:</span>
+            <span class="stat-value" id="detectionCount">0</span>
+        </div>
+        <div class="stat-item">
+            <span>Mode:</span>
+            <span class="stat-value" id="currentMode">Wave</span>
+        </div>
+    </div>
+
+    <div class="achievement" id="achievement">
+        <strong>🏆 Achievement!</strong><br>
+        <span id="achievementText"></span>
+    </div>
+
+    <div class="container">
+        <h1>Double-Slit Experiment</h1>
+        <p class="subtitle">Witness the wave-particle duality of quantum mechanics</p>
+
+        <div class="canvas-container">
+            <canvas id="slitCanvas" width="900" height="500"></canvas>
+        </div>
+
+        <div class="control-panel">
+            <div class="controls-grid">
+                <div class="control-group">
+                    <h3>Particle Properties</h3>
+                    <div class="control-item">
+                        <label>Speed</label>
+                        <input type="range" class="slider" id="speedSlider" min="2" max="8" value="4" oninput="updateSpeed(this.value)">
+                        <div class="value-display" id="speedValue">4</div>
+                    </div>
+                    <div class="control-item">
+                        <label>Wave Amplitude</label>
+                        <input type="range" class="slider" id="amplitudeSlider" min="0" max="60" value="40" oninput="updateAmplitude(this.value)">
+                        <div class="value-display" id="amplitudeValue">40</div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>Experiment Settings</h3>
+                    <div class="control-item">
+                        <label>Slit Width</label>
+                        <input type="range" class="slider" id="slitSlider" min="10" max="30" value="20" oninput="updateSlitWidth(this.value)">
+                        <div class="value-display" id="slitValue">20</div>
+                    </div>
+                    <div class="control-item">
+                        <label>Fire Rate (ms)</label>
+                        <input type="range" class="slider" id="rateSlider" min="50" max="500" value="200" oninput="updateRate(this.value)">
+                        <div class="value-display" id="rateValue">200</div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>Observation Mode</h3>
+                    <div class="toggle-container">
+                        <span style="color: #8ecae6; font-weight: 500;">👁️ Observe Slit</span>
+                        <div class="toggle" id="observeToggle" onclick="toggleObservation(this)"></div>
+                    </div>
+                    <p style="color: #8ecae6; margin-top: 1rem; font-size: 0.9rem;">
+                        Observation changes pattern!
+                    </p>
+                </div>
+            </div>
+
+            <div class="button-controls">
+                <button class="btn" onclick="fireParticle()">🎯 Fire Particle</button>
+                <button class="btn" onclick="startContinuous()">▶️ Continuous</button>
+                <button class="btn btn-secondary" onclick="stopContinuous()">⏸️ Stop</button>
+                <button class="btn btn-secondary" onclick="clearScreen()">🗑️ Clear</button>
+            </div>
+        </div>
+
+        <div class="info-grid">
+            <div class="info-box">
+                <h2>🌊 Wave Behavior</h2>
+                <p>Unobserved particles behave as waves, creating interference patterns with multiple bands.</p>
+                <p><strong>Key:</strong> Particle passes through both slits as a probability wave.</p>
+            </div>
+
+            <div class="info-box">
+                <h2>⚫ Particle Behavior</h2>
+                <p>When observed, wave function collapses. Interference pattern disappears!</p>
+                <p><strong>Key:</strong> Measurement changes quantum behavior.</p>
+            </div>
+
+            <div class="info-box">
+                <h2>🎯 The Mystery</h2>
+                <p>This demonstrates quantum mechanics' profound principle: observation affects reality.</p>
+                <p><strong>Key:</strong> Particles exist in superposition before measurement.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('slitCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const slits = {
+            x: 250,
+            y1: 180,
+            y2: 320,
+            width: 20
+        };
+
+        const screen = { x: 750 };
+        let particles = [];
+        let detections = [];
+        let observing = false;
+        let continuousInterval = null;
+        let particleSpeed = 4;
+        let waveAmplitude = 40;
+        let fireRate = 200;
+        let stats = { fired: 0, detected: 0 };
+
+        class Particle {
+            constructor() {
+                this.x = 50;
+                this.y = 250;
+                this.vx = particleSpeed;
+                this.path = observing ? (Math.random() < 0.5 ? 'top' : 'bottom') : 'wave';
+                this.phase = Math.random() * Math.PI * 2;
+                this.amplitude = observing ? 0 : waveAmplitude;
+                this.active = true;
+                this.color = observing ? '#ff00ff' : '#00ffff';
+                stats.fired++;
+            }
+
+            update() {
+                this.x += this.vx;
+                
+                if (!observing) {
+                    this.y = 250 + Math.sin(this.x * 0.05 + this.phase) * this.amplitude;
+                } else {
+                    this.y = this.path === 'top' ? slits.y1 + 10 : slits.y2 + 10;
+                }
+
+                if (this.x >= screen.x && this.active) {
+                    this.active = false;
+                    stats.detected++;
+                    
+                    if (observing) {
+                        detections.push({
+                            y: this.y,
+                            intensity: 1
+                        });
+                    } else {
+                        const interference = Math.sin(this.phase) * Math.cos(this.y * 0.02);
+                        detections.push({
+                            y: this.y + interference * 30,
+                            intensity: Math.abs(interference)
+                        });
+                    }
+                    checkAchievements();
+                }
+            }
+
+            draw() {
+                if (!this.active) return;
+
+                ctx.save();
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 4, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+                ctx.restore();
+
+                if (this.x < slits.x && !observing) {
+                    ctx.save();
+                    ctx.globalAlpha = 0.3;
+                    ctx.strokeStyle = this.color;
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    for (let i = 0; i < 5; i++) {
+                        const px = this.x - i * 4;
+                        const py = 250 + Math.sin(px * 0.05 + this.phase) * this.amplitude;
+                        if (i === 0) ctx.moveTo(px, py);
+                        else ctx.lineTo(px, py);
+                    }
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            }
+        }
+
+        function drawApparatus() {
+            ctx.fillStyle = 'rgba(10, 10, 26, 0.3)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#1a1a3a';
+            ctx.fillRect(slits.x - 5, 0, 10, slits.y1);
+            ctx.fillRect(slits.x - 5, slits.y1 + slits.width, 10, slits.y2 - slits.y1 - slits.width);
+            ctx.fillRect(slits.x - 5, slits.y2 + slits.width, 10, canvas.height - slits.y2 - slits.width);
+
+            ctx.strokeStyle = '#00ffff';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(slits.x - 5, slits.y1, 10, slits.width);
+            ctx.strokeRect(slits.x - 5, slits.y2, 10, slits.width);
+
+            ctx.strokeStyle = '#0099ff';
+            ctx.beginPath();
+            ctx.moveTo(screen.x, 0);
+            ctx.lineTo(screen.x, canvas.height);
+            ctx.stroke();
+
+            ctx.font = 'bold 14px Arial';
+            ctx.fillStyle = '#00ffff';
+            ctx.fillText('Source', 20, 30);
+            ctx.fillText('Double Slit', slits.x - 40, 30);
+            ctx.fillText('Detector', screen.x - 35, 30);
+
+            if (observing) {
+                ctx.fillStyle = '#ff00ff';
+                ctx.fillText('👁️ OBSERVING', slits.x - 50, 60);
+            }
+        }
+
+        function drawDetections() {
+            detections.forEach(d => {
+                ctx.beginPath();
+                ctx.arc(screen.x, d.y, 2, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(0, 255, 255, ${d.intensity * 0.8})`;
+                ctx.fill();
+            });
+        }
+
+        function animate() {
+            drawApparatus();
+            drawDetections();
+
+            particles = particles.filter(p => p.x < canvas.width);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            updateStats();
+            requestAnimationFrame(animate);
+        }
+
+        function updateStats() {
+            document.getElementById('particlesFired').textContent = stats.fired;
+            document.getElementById('detectionCount').textContent = stats.detected;
+            document.getElementById('currentMode').textContent = observing ? 'Particle' : 'Wave';
+        }
+
+        function fireParticle() {
+            particles.push(new Particle());
+        }
+
+        function startContinuous() {
+            if (continuousInterval) return;
+            continuousInterval = setInterval(() => {
+                particles.push(new Particle());
+            }, fireRate);
+        }
+
+        function stopContinuous() {
+            if (continuousInterval) {
+                clearInterval(continuousInterval);
+                continuousInterval = null;
+            }
+        }
+
+        function clearScreen() {
+            detections = [];
+            particles = [];
+            stats.detected = 0;
+            showAchievement('Screen Cleared! 🗑️');
+        }
+
+        function toggleObservation(element) {
+            element.classList.toggle('active');
+            observing = element.classList.contains('active');
+            clearScreen();
+            stats.fired = 0;
+        }
+
+        function updateSpeed(value) {
+            particleSpeed = parseInt(value);
+            document.getElementById('speedValue').textContent = value;
+        }
+
+        function updateAmplitude(value) {
+            waveAmplitude = parseInt(value);
+            document.getElementById('amplitudeValue').textContent = value;
+        }
+
+        function updateSlitWidth(value) {
+            slits.width = parseInt(value);
+            document.getElementById('slitValue').textContent = value;
+        }
+
+        function updateRate(value) {
+            fireRate = parseInt(value);
+            document.getElementById('rateValue').textContent = value;
+            if (continuousInterval) {
+                stopContinuous();
+                startContinuous();
+            }
+        }
+
+        const achievements = [
+            { id: 'first50', count: 50, text: 'Fired 50 particles!' },
+            { id: 'first200', count: 200, text: 'Quantum explorer! 200 particles' },
+            { id: 'first500', count: 500, text: 'Quantum master! 500 particles' }
+        ];
+        const unlockedAchievements = new Set();
+
+        function checkAchievements() {
+            achievements.forEach(ach => {
+                if (stats.fired >= ach.count && !unlockedAchievements.has(ach.id)) {
+                    unlockedAchievements.add(ach.id);
+                    showAchievement(ach.text);
+                }
+            });
+        }
+
+        function showAchievement(text) {
+            const achievement = document.getElementById('achievement');
+            document.getElementById('achievementText').textContent = text;
+            achievement.classList.add('show');
+            setTimeout(() => achievement.classList.remove('show'), 4000);
+        }
+
+        animate();
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === ' ') fireParticle();
+            if (e.key === 'c') clearScreen();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universe Scale - CosmicLab</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #000428 0%, #004e92 100%);
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 4, 40, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+            z-index: 100;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover {
+            background: rgba(255, 215, 0, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 8rem 2rem 4rem;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.5)); }
+            50% { filter: drop-shadow(0 0 40px rgba(255, 215, 0, 0.8)); }
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #b3d9ff;
+            margin-bottom: 3rem;
+            font-size: 1.2rem;
+        }
+
+        .visualization-container {
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 2rem 0;
+            position: relative;
+            overflow: hidden;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .visualization-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        #scaleObject {
+            position: relative;
+            z-index: 1;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #ffd700, #ff8c00, #ff4500);
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.6);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .size-comparison {
+            position: relative;
+            z-index: 1;
+            margin-top: 2rem;
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .comparison-item {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(0, 30, 60, 0.6);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .comparison-item .object {
+            margin: 1rem auto;
+            border-radius: 50%;
+            background: radial-gradient(circle, #ffd700, #ff8c00);
+        }
+
+        .control-panel {
+            background: rgba(0, 30, 60, 0.8);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .control-panel h3 {
+            color: #ffd700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+
+        .slider-container {
+            margin: 2rem 0;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            color: #b3d9ff;
+            font-weight: 500;
+        }
+
+        #scale {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: linear-gradient(to right, #004e92, #ffd700);
+            outline: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+
+        #scale::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #ffd700;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            transition: all 0.3s ease;
+        }
+
+        #scale::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        #scale::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #ffd700;
+            cursor: pointer;
+            border: none;
+        }
+
+        #scaleText {
+            text-align: center;
+            font-size: 2rem;
+            color: #ffd700;
+            margin: 2rem 0;
+            font-weight: bold;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            line-height: 1.6;
+        }
+
+        .comparison {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 15px;
+            color: #b3d9ff;
+            font-size: 1.1rem;
+        }
+
+        .quick-jump {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .jump-btn {
+            padding: 0.8rem 1.5rem;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 25px;
+            color: #ffd700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .jump-btn:hover {
+            background: rgba(255, 215, 0, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .info-card {
+            background: rgba(0, 30, 60, 0.6);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 215, 0, 0.5);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        }
+
+        .info-card h3 {
+            color: #ffd700;
+            margin-bottom: 0.8rem;
+            font-size: 1.3rem;
+        }
+
+        .info-card p {
+            color: #b3d9ff;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .timeline {
+            position: relative;
+            margin: 3rem 0;
+            padding: 2rem;
+            background: rgba(0, 30, 60, 0.6);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .timeline h2 {
+            color: #ffd700;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+
+        .timeline-item {
+            padding: 1rem;
+            margin: 1rem 0;
+            background: rgba(0, 0, 0, 0.3);
+            border-left: 3px solid #ffd700;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:hover {
+            transform: translateX(10px);
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .timeline-item h4 {
+            color: #ffd700;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-item p {
+            color: #b3d9ff;
+            font-size: 0.9rem;
+        }
+
+        .stats-display {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            background: rgba(0, 30, 60, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.5);
+            border-radius: 15px;
+            padding: 1.5rem;
+            z-index: 10;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 0.8rem 0;
+            color: #b3d9ff;
+            gap: 1rem;
+        }
+
+        .stat-value {
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .achievement {
+            position: fixed;
+            top: 5rem;
+            right: 2rem;
+            background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
+            padding: 1.5rem 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(255, 215, 0, 0.8);
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.5s ease;
+        }
+
+        .achievement.show {
+            transform: translateX(0);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 6rem 1rem 2rem;
+            }
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            .stats-display {
+                position: relative;
+                left: 0;
+                margin: 2rem auto;
+            }
+            nav {
+                padding: 1rem;
+            }
+            .nav-links {
+                gap: 0.5rem;
+            }
+            nav a {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-links">
+            <a href="index.html">🏠 Home</a>
+            <a href="blackholes.html">🌌 Black Holes</a>
+            <a href="quantum.html">⚛️ Quantum</a>
+            <a href="universe.html">🌠 Universe</a>
+        </div>
+    </nav>
+
+    <div class="stats-display">
+        <h4 style="color: #ffd700; margin-bottom: 1rem; text-align: center;">Journey Stats</h4>
+        <div class="stat-item">
+            <span>Scales Explored:</span>
+            <span class="stat-value" id="scalesExplored">0</span>
+        </div>
+        <div class="stat-item">
+            <span>Total Jumps:</span>
+            <span class="stat-value" id="totalJumps">0</span>
+        </div>
+        <div class="stat-item">
+            <span>Current Level:</span>
+            <span class="stat-value" id="currentLevel">Beginner</span>
+        </div>
+    </div>
+
+    <div class="achievement" id="achievement">
+        <strong>🏆 Achievement!</strong><br>
+        <span id="achievementText"></span>
+    </div>
+
+    <div class="container">
+        <h1>Universe Scale Explorer</h1>
+        <p class="subtitle">Journey from the quantum realm to the cosmic web</p>
+
+        <div class="visualization-container">
+            <div id="scaleObject"></div>
+            <div class="size-comparison" id="sizeComparison"></div>
+        </div>
+
+        <div class="control-panel">
+            <h3>Scale Navigator</h3>
+            <div class="slider-container">
+                <div class="slider-label">
+                    <span>⚛️ Quantum</span>
+                    <span>🌌 Cosmic</span>
+                </div>
+                <input type="range" min="1" max="100" value="1" id="scale">
+            </div>
+            <div id="scaleText"></div>
+            <div class="comparison" id="comparison"></div>
+
+            <div class="quick-jump">
+                <button class="jump-btn" onclick="jumpToScale(1)">Planck</button>
+                <button class="jump-btn" onclick="jumpToScale(20)">Atom</button>
+                <button class="jump-btn" onclick="jumpToScale(40)">Cell</button>
+                <button class="jump-btn" onclick="jumpToScale(50)">Human</button>
+                <button class="jump-btn" onclick="jumpToScale(70)">Earth</button>
+                <button class="jump-btn" onclick="jumpToScale(90)">Solar System</button>
+                <button class="jump-btn" onclick="jumpToScale(100)">Universe</button>
+            </div>
+        </div>
+
+        <div class="info-grid">
+            <div class="info-card">
+                <h3>⚛️ Quantum Realm</h3>
+                <p>At the smallest scales, quantum mechanics rules. Particles exist in superposition and behave probabilistically. The Planck length represents the smallest meaningful distance in physics.</p>
+            </div>
+            <div class="info-card">
+                <h3>🧬 Molecular Scale</h3>
+                <p>Atoms bond together to form molecules that make up all matter. DNA, proteins, and complex organic molecules drive all life processes at this scale.</p>
+            </div>
+            <div class="info-card">
+                <h3>🌍 Planetary Scale</h3>
+                <p>Planets, moons, and celestial bodies shaped by gravity and stellar processes. Earth hosts the only known life in the universe at this scale.</p>
+            </div>
+            <div class="info-card">
+                <h3>⭐ Stellar Scale</h3>
+                <p>Stars are massive nuclear fusion reactors that forge the elements. Our Sun is a medium-sized star containing 99.86% of our solar system's mass.</p>
+            </div>
+            <div class="info-card">
+                <h3>🌌 Galactic Scale</h3>
+                <p>Galaxies contain hundreds of billions of stars bound by gravity. The Milky Way is just one of trillions of galaxies in the observable universe.</p>
+            </div>
+            <div class="info-card">
+                <h3>🌠 Cosmic Scale</h3>
+                <p>The observable universe spans 93 billion light-years and contains over 2 trillion galaxies. It began 13.8 billion years ago with the Big Bang.</p>
+            </div>
+        </div>
+
+        <div class="timeline">
+            <h2>Cosmic Timeline</h2>
+            <div class="timeline-item">
+                <h4>13.8 Billion Years Ago - Big Bang</h4>
+                <p>The universe begins from a singularity, expanding and cooling rapidly. All space, time, matter, and energy originate from this moment.</p>
+            </div>
+            <div class="timeline-item">
+                <h4>380,000 Years - Recombination</h4>
+                <p>Universe cools enough for atoms to form. Light can finally travel freely, creating the cosmic microwave background we observe today.</p>
+            </div>
+            <div class="timeline-item">
+                <h4>200 Million Years - First Stars</h4>
+                <p>The first generation of stars ignite, illuminating the universe and creating heavier elements through nuclear fusion.</p>
+            </div>
+            <div class="timeline-item">
+                <h4>4.6 Billion Years Ago - Solar System Forms</h4>
+                <p>Our solar system coalesces from a cloud of gas and dust. Earth forms and life begins within a billion years.</p>
+            </div>
+            <div class="timeline-item">
+                <h4>Present Day</h4>
+                <p>Humans explore the cosmos, uncovering the universe's secrets from the quantum to the cosmic scale.</p>
+            </div>
+            <div class="timeline-item">
+                <h4>Far Future - Heat Death</h4>
+                <p>The universe continues expanding. Stars will eventually burn out, leading to a cold, dark future trillions of years from now.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const slider = document.getElementById('scale');
+        const scaleText = document.getElementById('scaleText');
+        const scaleObject = document.getElementById('scaleObject');
+        const comparison = document.getElementById('comparison');
+        const sizeComparison = document.getElementById('sizeComparison');
+
+        const scales = [
+            { value: 1, name: 'Planck Length', size: 20, info: '10⁻³⁵ meters', compare: 'The smallest meaningful distance in physics. Quantum foam at this scale makes spacetime uncertain.', color: '#ffffff' },
+            { value: 10, name: 'Proton', size: 30, info: '10⁻¹⁵ meters', compare: '100 million times smaller than an atom. Made of quarks held together by the strong force.', color: '#ff00ff' },
+            { value: 20, name: 'Atom', size: 50, info: '10⁻¹⁰ meters', compare: 'Building block of all matter. Mostly empty space with electrons orbiting the nucleus.', color: '#00ffff' },
+            { value: 30, name: 'Virus', size: 70, info: '10⁻⁸ meters', compare: 'Smaller than wavelength of visible light. Can only be seen with electron microscopes.', color: '#00ff00' },
+            { value: 40, name: 'Human Cell', size: 100, info: '10⁻⁵ meters', compare: 'Your body contains 37 trillion cells, each a complex molecular machine.', color: '#ffff00' },
+            { value: 50, name: 'Human', size: 150, info: '~2 meters', compare: 'Made of billions of cells. The only known conscious observers in the universe.', color: '#ffa500' },
+            { value: 60, name: 'Mount Everest', size: 180, info: '8,849 meters', compare: 'Tallest mountain on Earth. Still tiny compared to planetary scales.', color: '#ff6600' },
+            { value: 70, name: 'Earth', size: 220, info: '12,742 km', compare: '7.9 billion humans call this home. A pale blue dot in the cosmic ocean.', color: '#4169e1' },
+            { value: 80, name: 'Sun', size: 260, info: '1.4 million km', compare: '109 times wider than Earth. Contains 99.86% of solar system mass.', color: '#ffd700' },
+            { value: 90, name: 'Solar System', size: 300, info: '287 billion km', compare: 'Takes light 8 hours to cross from Sun to Neptune.', color: '#ff8c00' },
+            { value: 95, name: 'Milky Way', size: 340, info: '100,000 light-years', compare: '200-400 billion stars. Our Sun orbits the center every 225 million years.', color: '#9370db' },
+            { value: 100, name: 'Observable Universe', size: 380, info: '93 billion light-years', compare: '2 trillion galaxies and counting. Everything we can ever observe.', color: '#ff1493' }
+        ];
+
+        let stats = { explored: new Set(), jumps: 0 };
+
+        function updateScale() {
+            const value = parseInt(slider.value);
+            let currentScale = scales[0];
+            
+            for (let i = 0; i < scales.length; i++) {
+                if (value >= scales[i].value) {
+                    currentScale = scales[i];
+                }
+            }
+
+            stats.explored.add(currentScale.name);
+            const size = currentScale.size + (value - currentScale.value) * 2;
+            scaleObject.style.width = size + 'px';
+            scaleObject.style.height = size + 'px';
+
+            const hue = (value / 100) * 280;
+            scaleObject.style.background = `radial-gradient(circle at 30% 30%, 
+                hsl(${hue}, 100%, 60%), 
+                hsl(${hue + 30}, 100%, 50%), 
+                hsl(${hue + 60}, 100%, 40%))`;
+            scaleObject.style.boxShadow = `0 0 ${size}px hsla(${hue}, 100%, 50%, 0.6)`;
+
+            scaleText.innerHTML = `<strong>${currentScale.name}</strong><br><span style="font-size: 1.2rem;">${currentScale.info}</span>`;
+            comparison.textContent = currentScale.compare;
+
+            updateComparison(currentScale, value);
+            updateStats();
+            checkAchievements(value);
+        }
+
+        function updateComparison(current, value) {
+            if (value > 50) {
+                const earth = scales.find(s => s.name === 'Earth');
+                const earthSize = 30;
+                const ratio = Math.pow(10, (value - 70) / 10);
+                
+                sizeComparison.innerHTML = `
+                    <div class="comparison-item">
+                        <div>Earth</div>
+                        <div class="object" style="width: ${earthSize}px; height: ${earthSize}px;"></div>
+                    </div>
+                    <div class="comparison-item">
+                        <div>${current.name}</div>
+                        <div class="object" style="width: ${Math.min(earthSize * ratio, 200)}px; height: ${Math.min(earthSize * ratio, 200)}px;"></div>
+                    </div>
+                `;
+            } else {
+                sizeComparison.innerHTML = '';
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('scalesExplored').textContent = stats.explored.size;
+            document.getElementById('totalJumps').textContent = stats.jumps;
+            
+            let level = 'Beginner';
+            if (stats.explored.size >= 10) level = 'Expert';
+            else if (stats.explored.size >= 6) level = 'Explorer';
+            else if (stats.explored.size >= 3) level = 'Curious';
+            
+            document.getElementById('currentLevel').textContent = level;
+        }
+
+        function jumpToScale(value) {
+            slider.value = value;
+            stats.jumps++;
+            updateScale();
+            showAchievement(`Jumped to ${scales.find(s => s.value <= value && (!scales.find(s2 => s2.value <= value && s2.value > s.value)))?.name || 'scale'}!`);
+        }
+
+        const achievements = [
+            { id: 'explore3', condition: () => stats.explored.size >= 3, text: 'Explored 3 different scales!' },
+            { id: 'explore6', condition: () => stats.explored.size >= 6, text: 'Cosmic Explorer! 6 scales visited' },
+            { id: 'exploreAll', condition: () => stats.explored.size >= 12, text: 'Master of Scales! All scales explored!' },
+            { id: 'jump10', condition: () => stats.jumps >= 10, text: 'Scale Hopper! 10 jumps completed' }
+        ];
+        const unlockedAchievements = new Set();
+
+        function checkAchievements(value) {
+            achievements.forEach(ach => {
+                if (ach.condition() && !unlockedAchievements.has(ach.id)) {
+                    unlockedAchievements.add(ach.id);
+                    showAchievement(ach.text);
+                }
+            });
+        }
+
+        function showAchievement(text) {
+            const achievement = document.getElementById('achievement');
+            document.getElementById('achievementText').textContent = text;
+            achievement.classList.add('show');
+            setTimeout(() => achievement.classList.remove('show'), 4000);
+        }
+
+        slider.addEventListener('input', updateScale);
+        updateScale();
+
+        setInterval(() => {
+            const rotation = parseFloat(scaleObject.style.transform?.match(/rotate\(([^)]+)deg\)/)?.[1] || 0);
+            scaleObject.style.transform = `rotate(${rotation + 1}deg)`;
+        }, 50);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                slider.value = Math.max(1, parseInt(slider.value) - 5);
+                updateScale();
+            }
+            if (e.key === 'ArrowRight') {
+                slider.value = Math.min(100, parseInt(slider.value) + 5);
+                updateScale();
+            }
+        });
+    </script>
+</body>
+</html>
