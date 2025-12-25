@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CosmicLab - Explore the universe through interactive physics simulations. Learn about black holes, quantum mechanics, relativity, and cosmic scale.">
+    <meta name="keywords" content="physics, astronomy, quantum mechanics, black holes, universe, education, relativity, particles">
     <title>CosmicLab - Explore the Universe</title>
     <style>
         * {
@@ -36,63 +38,7 @@
             pointer-events: none;
         }
 
-        /* Command Palette */
-        #commandPalette {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.9);
-            background: rgba(10, 10, 26, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(138, 43, 226, 0.5);
-            border-radius: 20px;
-            padding: 2rem;
-            width: 90%;
-            max-width: 600px;
-            z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.3s ease;
-        }
-
-        #commandPalette.active {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-            pointer-events: all;
-        }
-
-        #commandSearch {
-            width: 100%;
-            padding: 1rem;
-            background: rgba(26, 10, 46, 0.6);
-            border: 1px solid rgba(138, 43, 226, 0.3);
-            border-radius: 10px;
-            color: white;
-            font-size: 1.1rem;
-            outline: none;
-        }
-
-        #commandResults {
-            margin-top: 1rem;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .command-item {
-            padding: 1rem;
-            margin: 0.5rem 0;
-            background: rgba(26, 10, 46, 0.4);
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .command-item:hover {
-            background: rgba(138, 43, 226, 0.3);
-            transform: translateX(10px);
-        }
-
-        /* Navigation */
+        /* Improved Navigation */
         nav {
             position: fixed;
             top: 0;
@@ -114,49 +60,81 @@
             box-shadow: 0 5px 30px rgba(138, 43, 226, 0.3);
         }
 
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
         .nav-links {
             display: flex;
-            gap: 2rem;
+            gap: 1.5rem;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         nav a {
             color: var(--light);
             text-decoration: none;
             font-weight: 500;
-            padding: 0.5rem 1.5rem;
+            padding: 0.5rem 1rem;
             border-radius: 25px;
             transition: all 0.3s ease;
             position: relative;
+            font-size: 0.95rem;
         }
 
-        nav a:hover {
+        nav a:hover, nav a:focus {
             background: rgba(138, 43, 226, 0.2);
             transform: translateY(-2px);
+            outline: none;
         }
 
-        .theme-toggle {
-            cursor: pointer;
-            padding: 0.5rem;
+        nav a.active {
+            background: rgba(138, 43, 226, 0.3);
+        }
+
+        /* Mobile Menu Button */
+        .mobile-menu-btn {
+            display: none;
             background: rgba(138, 43, 226, 0.2);
-            border-radius: 50%;
+            border: none;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        .mobile-menu-btn:hover {
+            background: rgba(138, 43, 226, 0.4);
+        }
+
+        /* Search and Theme Controls */
+        .nav-controls {
             display: flex;
+            gap: 1rem;
             align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
         }
 
-        .theme-toggle:hover {
-            transform: rotate(180deg);
-        }
-
-        /* Search Bar */
         .search-container {
             position: relative;
         }
 
         #searchBar {
-            padding: 0.5rem 1rem;
+            padding: 0.5rem 1rem 0.5rem 2.5rem;
             background: rgba(26, 10, 46, 0.6);
             border: 1px solid rgba(138, 43, 226, 0.3);
             border-radius: 25px;
@@ -169,9 +147,106 @@
             width: 300px;
             outline: none;
             border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(138, 43, 226, 0.3);
         }
 
-        /* Hero Section */
+        .search-icon {
+            position: absolute;
+            left: 0.8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent);
+            pointer-events: none;
+        }
+
+        .theme-toggle {
+            cursor: pointer;
+            padding: 0.6rem;
+            background: rgba(138, 43, 226, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(180deg);
+            background: rgba(138, 43, 226, 0.4);
+        }
+
+        /* Command Palette - Enhanced */
+        #commandPalette {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: rgba(10, 10, 26, 0.98);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(138, 43, 226, 0.5);
+            border-radius: 20px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 600px;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 20px 60px rgba(138, 43, 226, 0.4);
+        }
+
+        #commandPalette.active {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            pointer-events: all;
+        }
+
+        #commandSearch {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(26, 10, 46, 0.6);
+            border: 1px solid rgba(138, 43, 226, 0.3);
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1rem;
+            outline: none;
+        }
+
+        #commandSearch::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        #commandResults {
+            margin-top: 1rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .command-item {
+            padding: 1rem;
+            margin: 0.5rem 0;
+            background: rgba(26, 10, 46, 0.4);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .command-item:hover {
+            background: rgba(138, 43, 226, 0.3);
+            transform: translateX(10px);
+        }
+
+        .command-icon {
+            font-size: 1.3rem;
+        }
+
+        /* Hero Section - Enhanced */
         .hero {
             position: relative;
             z-index: 1;
@@ -247,9 +322,10 @@
             height: 300px;
         }
 
-        .btn:hover {
+        .btn:hover, .btn:focus {
             transform: translateY(-3px);
             box-shadow: 0 10px 30px rgba(138, 43, 226, 0.6);
+            outline: none;
         }
 
         .btn-outline {
@@ -257,7 +333,7 @@
             border: 2px solid var(--accent);
         }
 
-        /* Stats Section */
+        /* Stats Section - Enhanced */
         .stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -278,6 +354,7 @@
         .stat-card:hover {
             transform: translateY(-10px);
             border-color: var(--accent);
+            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.4);
         }
 
         .stat-number {
@@ -292,7 +369,7 @@
             font-size: 1rem;
         }
 
-        /* Features Grid */
+        /* Features Section */
         .features {
             max-width: 1400px;
             margin: 0 auto;
@@ -308,7 +385,7 @@
 
         .card-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
         }
 
@@ -362,11 +439,9 @@
             margin-bottom: 1.5rem;
         }
 
-        /* Toast Notification */
-        #toast {
+        /* Toast & Achievement - Enhanced */
+        #toast, #achievement {
             position: fixed;
-            bottom: 2rem;
-            right: 2rem;
             background: rgba(26, 10, 46, 0.95);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(138, 43, 226, 0.5);
@@ -377,29 +452,23 @@
             transition: transform 0.3s ease;
         }
 
-        #toast.show {
-            transform: translateX(0);
+        #toast {
+            bottom: 2rem;
+            right: 2rem;
         }
 
-        /* Achievement Popup */
         #achievement {
-            position: fixed;
             top: 5rem;
             right: 2rem;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 15px;
-            padding: 1.5rem;
-            z-index: 1000;
-            transform: translateX(400px);
-            transition: transform 0.5s ease;
             box-shadow: 0 10px 40px rgba(138, 43, 226, 0.6);
         }
 
-        #achievement.show {
+        #toast.show, #achievement.show {
             transform: translateX(0);
         }
 
-        /* Loading Screen */
+        /* Loading Screen - Enhanced */
         #loadingScreen {
             position: fixed;
             top: 0;
@@ -439,6 +508,17 @@
             color: var(--accent);
         }
 
+        /* Scroll Progress Bar */
+        #progressBar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            z-index: 101;
+            transition: width 0.1s ease;
+        }
+
         /* Floating Action Button */
         .fab {
             position: fixed;
@@ -455,25 +535,163 @@
             box-shadow: 0 5px 20px rgba(138, 43, 226, 0.6);
             transition: all 0.3s ease;
             z-index: 99;
+            color: white;
+            font-size: 1.5rem;
+            border: none;
         }
 
         .fab:hover {
             transform: scale(1.1) rotate(90deg);
         }
 
-        /* Responsive */
+        /* Newsletter Section */
+        .newsletter {
+            max-width: 800px;
+            margin: 4rem auto;
+            padding: 3rem 2rem;
+            background: rgba(26, 10, 46, 0.6);
+            border: 1px solid rgba(138, 43, 226, 0.3);
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .newsletter h2 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .newsletter p {
+            color: #b8b8d4;
+            margin-bottom: 2rem;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 1rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .newsletter-form input {
+            flex: 1;
+            padding: 1rem;
+            background: rgba(26, 10, 46, 0.6);
+            border: 1px solid rgba(138, 43, 226, 0.3);
+            border-radius: 25px;
+            color: white;
+            outline: none;
+        }
+
+        .newsletter-form input:focus {
+            border-color: var(--accent);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(10, 10, 26, 0.9);
+            border-top: 1px solid rgba(138, 43, 226, 0.3);
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: #b8b8d4;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--accent);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: rgba(138, 43, 226, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: rgba(138, 43, 226, 0.4);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            color: #b8b8d4;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(138, 43, 226, 0.2);
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
             nav {
                 padding: 1rem 1.5rem;
             }
-            
-            .nav-links {
-                gap: 1rem;
+
+            .mobile-menu-btn {
+                display: block;
             }
             
-            nav a {
-                padding: 0.5rem 1rem;
-                font-size: 0.9rem;
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: rgba(10, 10, 26, 0.98);
+                flex-direction: column;
+                padding: 2rem;
+                transform: translateY(-100%);
+                opacity: 0;
+                pointer-events: none;
+                transition: all 0.3s ease;
+                border-bottom: 1px solid rgba(138, 43, 226, 0.3);
+            }
+
+            .nav-links.active {
+                transform: translateY(0);
+                opacity: 1;
+                pointer-events: all;
+            }
+
+            #searchBar {
+                width: 150px;
+            }
+
+            #searchBar:focus {
+                width: 200px;
             }
             
             .cta-buttons {
@@ -483,17 +701,29 @@
             .card-grid {
                 grid-template-columns: 1fr;
             }
+
+            .newsletter-form {
+                flex-direction: column;
+            }
         }
 
-        /* Scroll Progress Bar */
-        #progressBar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            z-index: 101;
-            transition: width 0.1s ease;
+        /* Accessibility improvements */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        /* Focus visible for keyboard navigation */
+        *:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
         }
     </style>
 </head>
@@ -505,389 +735,434 @@
     </div>
 
     <!-- Progress Bar -->
-    <div id="progressBar"></div>
+    <div id="progressBar" role="progressbar" aria-label="Page scroll progress"></div>
 
     <!-- Background Effects -->
-    <canvas id="stars"></canvas>
-    <canvas id="particles"></canvas>
+    <canvas id="stars" aria-hidden="true"></canvas>
+    <canvas id="particles" aria-hidden="true"></canvas>
 
     <!-- Command Palette -->
-    <div id="commandPalette">
-        <input type="text" id="commandSearch" placeholder="Type a command or search... (Ctrl+K)">
-        <div id="commandResults"></div>
+    <div id="commandPalette" role="dialog" aria-label="Command palette">
+        <input type="text" id="commandSearch" placeholder="Type a command or search... (Ctrl+K)" aria-label="Command search">
+        <div id="commandResults" role="list"></div>
     </div>
 
     <!-- Navigation -->
-    <nav id="navbar">
-        <div class="nav-links">
-            <a href="index.html">🏠 Home</a>
-            <a href="blackholes.html">🌌 Black Holes</a>
-            <a href="quantum.html">⚛️ Quantum</a>
-            <a href="universe.html">🌠 Universe</a>
-        </div>
-        <div class="search-container">
-            <input type="text" id="searchBar" placeholder="Search...">
-            <span class="theme-toggle" onclick="toggleTheme()">🌙</span>
+    <nav id="navbar" role="navigation" aria-label="Main navigation">
+        <div class="nav-content">
+            <a href="index.html" class="nav-brand" aria-label="CosmicLab Home">🌌 CosmicLab</a>
+            
+            <button class="mobile-menu-btn" aria-label="Toggle mobile menu" aria-expanded="false">
+                ☰
+            </button>
+
+            <div class="nav-links" role="list">
+                <a href="index.html" class="active" role="listitem">🏠 Home</a>
+                <a href="blackholes.html" role="listitem">🌌 Black Holes</a>
+                <a href="quantum.html" role="listitem">⚛️ Quantum</a>
+                <a href="universe.html" role="listitem">🌠 Universe</a>
+                <a href="relativity.html" role="listitem">⚡ Relativity</a>
+                <a href="particle.html" role="listitem">🔬 Particles</a>
+                <a href="cosmology.html" role="listitem">🌌 Cosmology</a>
+                <a href="astrophysics.html" role="listitem">⭐ Stars</a>
+                <a href="string-theory.html" role="listitem">🎻 String Theory</a>
+                <a href="gravity-waves.html" role="listitem">🌊 Waves</a>
+                <a href="exoplanets.html" role="listitem">🪐 Exoplanets</a>
+                <a href="nuclear.html" role="listitem">☢️ Nuclear</a>
+            </div>
+
+            <div class="nav-controls">
+                <div class="search-container">
+                    <span class="search-icon" aria-hidden="true">🔍</span>
+                    <input type="text" id="searchBar" placeholder="Search..." aria-label="Search">
+                </div>
+                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark/light theme">🌙</button>
+            </div>
         </div>
     </nav>
 
     <!-- Toast Notification -->
-    <div id="toast">
+    <div id="toast" role="alert" aria-live="polite">
         <strong>Welcome back!</strong><br>
         Continue your cosmic journey
     </div>
 
     <!-- Achievement Popup -->
-    <div id="achievement">
+    <div id="achievement" role="alert" aria-live="polite">
         <strong>🏆 Achievement Unlocked!</strong><br>
         First Visit to CosmicLab
     </div>
 
     <!-- Main Content -->
-    <div class="hero">
-        <h1>CosmicLab</h1>
-        <div class="typed-text" id="typedText"></div>
-        <div class="cta-buttons">
-            <a href="#features" class="btn">Start Exploring</a>
-            <button class="btn btn-outline" onclick="showTour()">Take a Tour</button>
-        </div>
-
-        <div class="stats">
-            <div class="stat-card">
-                <div class="stat-number" data-target="3">0</div>
-                <div class="stat-label">Interactive Simulations</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" data-target="1000">0</div>
-                <div class="stat-label">Users Exploring</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" data-target="50">0</div>
-                <div class="stat-label">Physics Concepts</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Features Section -->
-    <div class="features" id="features">
-        <h2 class="section-title">Explore The Cosmos</h2>
-        <div class="card-grid">
-            <div class="card" onclick="navigateWithTransition('blackholes.html')">
-                <div class="card-icon">🌌</div>
-                <h2>Black Holes</h2>
-                <p>Experience gravitational giants that bend spacetime. Watch particles spiral into the event horizon.</p>
-                <a href="blackholes.html" class="btn">Explore</a>
+    <main>
+        <section class="hero">
+            <h1>CosmicLab</h1>
+            <div class="typed-text" id="typedText" aria-live="polite"></div>
+            <div class="cta-buttons">
+                <a href="#features" class="btn">Start Exploring</a>
+                <button class="btn btn-outline" onclick="showTour()">Take a Tour</button>
             </div>
 
-            <div class="card" onclick="navigateWithTransition('quantum.html')">
-                <div class="card-icon">⚛️</div>
-                <h2>Quantum Realm</h2>
-                <p>Witness wave-particle duality through the famous double-slit experiment. See quantum mechanics in action.</p>
-                <a href="quantum.html" class="btn">Discover</a>
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number" data-target="11" aria-label="11 simulations">0</div>
+                    <div class="stat-label">Interactive Simulations</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" data-target="1000" aria-label="Over 1000 users">0</div>
+                    <div class="stat-label">Users Exploring</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" data-target="100" aria-label="100 physics concepts">0</div>
+                    <div class="stat-label">Physics Concepts</div>
+                </div>
             </div>
+        </section>
 
-            <div class="card" onclick="navigateWithTransition('universe.html')">
-                <div class="card-icon">🌠</div>
-                <h2>Universe Scale</h2>
-                <p>Journey from quantum particles to galaxy clusters. Experience the true scale of our cosmos.</p>
-                <a href="universe.html" class="btn">Begin Journey</a>
+        <!-- Features Section -->
+        <section class="features" id="features">
+            <h2 class="section-title">Explore The Cosmos</h2>
+            <div class="card-grid">
+                <article class="card" onclick="navigateWithTransition('blackholes.html')" tabindex="0" role="button">
+                    <div class="card-icon" aria-hidden="true">🌌</div>
+                    <h2>Black Holes</h2>
+                    <p>Experience gravitational giants that bend spacetime. Watch particles spiral into the event horizon.</p>
+                    <a href="blackholes.html" class="btn">Explore</a>
+                </article>
+
+                <article class="card" onclick="navigateWithTransition('quantum.html')" tabindex="0" role="button">
+                    <div class="card-icon" aria-hidden="true">⚛️</div>
+                    <h2>Quantum Realm</h2>
+                    <p>Witness wave-particle duality through the famous double-slit experiment. See quantum mechanics in action.</p>
+                    <a href="quantum.html" class="btn">Discover</a>
+                </article>
+
+                <article class="card" onclick="navigateWithTransition('universe.html')" tabindex="0" role="button">
+                    <div class="card-icon" aria-hidden="true">🌠</div>
+                    <h2>Universe Scale</h2>
+                    <p>Journey from quantum particles to galaxy clusters. Experience the true scale of our cosmos.</p>
+                    <a href="universe.html" class="btn">Begin Journey</a>
+                </article>
+
+                <article class="card" onclick="navigateWithTransition('relativity.html')" tabindex="0" role="button">
+                    <div class="card-icon" aria-hidden="true">⚡</div>
+                    <h2>Relativity</h2>
+                    <p>Einstein's revolutionary theories. Experience time dilation, spacetime curvature, and the fabric of reality.</p>
+                    <a href="relativity.html" class="btn">Explore</a>
+                </article>
+
+                <article class="card" onclick="navigateWithTransition('particle.html')" tabindex="0" role="button">
+                    <div class="card-icon" aria-hidden="true">🔬</div>
+                    <h2>Particle Physics</h2>
+                    <p>Explore quarks, the Higgs boson, and the fundamental building blocks of our universe.</p>
+                    <a href="particle.html" class="btn">Discover</a>
+                </article>
+
+                <article class="card" onclick="navigateWithTransition('cosmology.html')" tabindex="0" role="button">
+                    <div class="card-icon" aria-hidden="true">🌌</div>
+                    <h2>Cosmology</h2>
+                    <p>Unravel the mysteries of dark matter, dark energy, and the cosmic microwave background.</p>
+                    <a href="cosmology.html" class="btn">Investigate</a>
+                </article>
+
+                <article class="card" onclick="navigateWithTransition('astrophysics.html')" tabindex="0" role="button">
+                    <div class="card-icon" aria-hidden="true">⭐</div>
+                    <h2>Astrophysics</h2>
+                    <p>Follow the lifecycle of stars from birth to supernovae, neutron stars, and pulsars.</p>
+                    <a href="astrophysics.html" class="btn">Journey</a>
+                </article>
+
+                <article class="card" onclick="navigateWithTransition('string-theory.html')" tabindex="0" role="button">
+                    <div class="card-icon" aria-hidden="true">🎻</div>
+                    <h2>String Theory</h2>
+                    <p>Dive into the theoretical framework where point-like particles are replaced by one-dimensional objects called strings.</p>
+                    <a href="string-theory.html" class="btn">Vibrate</a>
+                </article>
+
+                <article class="card" onclick="navigateWithTransition('gravity-waves.html')" tabindex="0" role="button">
+                    <div class="card-icon" aria-hidden="true">🌊</div>
+                    <h2>Gravitational Waves</h2>
+                    <p>Detect ripples in the fabric of spacetime caused by some of the most violent and energetic processes in the Universe.</p>
+                    <a href="gravity-waves.html" class="btn">Listen</a>
+                </article>
+
+                <article class="card" onclick="navigateWithTransition('exoplanets.html')" tabindex="0" role="button">
+                    <div class="card-icon" aria-hidden="true">🪐</div>
+                    <h2>Exoplanets</h2>
+                    <p>Hunt for worlds orbiting other stars. Analyze habitable zones and the potential for extraterrestrial life.</p>
+                    <a href="exoplanets.html" class="btn">Search</a>
+                </article>
+
+                <article class="card" onclick="navigateWithTransition('nuclear.html')" tabindex="0" role="button">
+                    <div class="card-icon" aria-hidden="true">☢️</div>
+                    <h2>Nuclear Physics</h2>
+                    <p>Understand the energy that powers the stars. Explore fission, fusion, and radioactive decay.</p>
+                    <a href="nuclear.html" class="btn">React</a>
+                </article>
             </div>
-        </div>
-    </div>
+        </section>
 
-    <!-- Floating Action Button -->
-    <div class="fab" onclick="scrollToTop()">
+        <section class="newsletter">
+            <h2>Stay Updated</h2>
+            <p>Get the latest physics simulations and cosmic discoveries delivered to your inbox.</p>
+            <form class="newsletter-form" onsubmit="handleSubscribe(event)">
+                <input type="email" placeholder="Enter your email address" required aria-label="Email address">
+                <button type="submit" class="btn">Subscribe</button>
+            </form>
+        </section>
+    </main>
+
+    <button class="fab" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" aria-label="Scroll to top">
         ↑
-    </div>
+    </button>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About CosmicLab</h3>
+                <p>An interactive educational platform dedicated to making complex physics concepts accessible and beautiful through web technologies.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Twitter">🐦</a>
+                    <a href="#" aria-label="GitHub">💻</a>
+                    <a href="#" aria-label="Discord">💬</a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul role="list">
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="simulations.html">All Simulations</a></li>
+                    <li><a href="teachers.html">For Teachers</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Community</h3>
+                <ul role="list">
+                    <li><a href="#">Discussion Forum</a></li>
+                    <li><a href="#">Contribute Code</a></li>
+                    <li><a href="#">Report a Bug</a></li>
+                    <li><a href="#">Donate</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2025 CosmicLab. Explore the Universe.</p>
+        </div>
+    </footer>
 
     <script>
-        // Loading Screen
+        // --- 1. Loading Screen ---
         window.addEventListener('load', () => {
+            const loader = document.getElementById('loadingScreen');
             setTimeout(() => {
-                document.getElementById('loadingScreen').classList.add('hidden');
-                showToast();
-                setTimeout(showAchievement, 2000);
-            }, 1500);
+                loader.classList.add('hidden');
+                initTypeWriter(); // Start typing effect after load
+                showToast(); // Show welcome toast
+            }, 800);
         });
 
-        // Scroll Progress Bar
-        window.addEventListener('scroll', () => {
-            const winScroll = document.documentElement.scrollTop;
-            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const scrolled = (winScroll / height) * 100;
-            document.getElementById('progressBar').style.width = scrolled + '%';
-        });
+        // --- 2. Canvas Background (Stars & Particles) ---
+        const canvas = document.getElementById('stars');
+        const ctx = canvas.getContext('2d');
+        let width, height, stars = [];
 
-        // Navbar scroll effect
-        window.addEventListener('scroll', () => {
-            const navbar = document.getElementById('navbar');
-            if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-        });
-
-        // Typed Text Effect
-        const phrases = [
-            "Explore reality from quantum to cosmic scales",
-            "Witness the mysteries of black holes",
-            "Experience quantum mechanics firsthand",
-            "Journey through spacetime"
-        ];
-        let phraseIndex = 0;
-        let charIndex = 0;
-        let isDeleting = false;
-        const typedElement = document.getElementById('typedText');
-
-        function type() {
-            const currentPhrase = phrases[phraseIndex];
-            
-            if (isDeleting) {
-                typedElement.textContent = currentPhrase.substring(0, charIndex - 1);
-                charIndex--;
-            } else {
-                typedElement.textContent = currentPhrase.substring(0, charIndex + 1);
-                charIndex++;
-            }
-
-            if (!isDeleting && charIndex === currentPhrase.length) {
-                setTimeout(() => isDeleting = true, 2000);
-            } else if (isDeleting && charIndex === 0) {
-                isDeleting = false;
-                phraseIndex = (phraseIndex + 1) % phrases.length;
-            }
-
-            setTimeout(type, isDeleting ? 50 : 100);
+        function resizeCanvas() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            createStars();
         }
 
-        type();
-
-        // Command Palette (Ctrl+K)
-        const commandPalette = document.getElementById('commandPalette');
-        const commandSearch = document.getElementById('commandSearch');
-        const commandResults = document.getElementById('commandResults');
-
-        const commands = [
-            { name: 'Go to Black Holes', action: () => window.location.href = 'blackholes.html' },
-            { name: 'Go to Quantum', action: () => window.location.href = 'quantum.html' },
-            { name: 'Go to Universe', action: () => window.location.href = 'universe.html' },
-            { name: 'Toggle Theme', action: toggleTheme },
-            { name: 'Scroll to Top', action: scrollToTop }
-        ];
-
-        document.addEventListener('keydown', (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-                e.preventDefault();
-                commandPalette.classList.toggle('active');
-                if (commandPalette.classList.contains('active')) {
-                    commandSearch.focus();
-                }
-            }
-            if (e.key === 'Escape') {
-                commandPalette.classList.remove('active');
-            }
-        });
-
-        commandSearch.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            const filtered = commands.filter(cmd => 
-                cmd.name.toLowerCase().includes(query)
-            );
-            
-            commandResults.innerHTML = filtered.map(cmd => 
-                `<div class="command-item" onclick="executeCommand('${cmd.name}')">${cmd.name}</div>`
-            ).join('');
-        });
-
-        function executeCommand(name) {
-            const command = commands.find(cmd => cmd.name === name);
-            if (command) {
-                command.action();
-                commandPalette.classList.remove('active');
+        function createStars() {
+            stars = [];
+            for (let i = 0; i < 200; i++) {
+                stars.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    size: Math.random() * 2,
+                    speed: Math.random() * 0.5
+                });
             }
         }
-
-        // Animated Stats Counter
-        const statNumbers = document.querySelectorAll('.stat-number');
-        let animated = false;
-
-        function animateStats() {
-            if (animated) return;
-            
-            statNumbers.forEach(stat => {
-                const target = parseInt(stat.getAttribute('data-target'));
-                let current = 0;
-                const increment = target / 50;
-                
-                const timer = setInterval(() => {
-                    current += increment;
-                    if (current >= target) {
-                        stat.textContent = target + '+';
-                        clearInterval(timer);
-                    } else {
-                        stat.textContent = Math.floor(current);
-                    }
-                }, 30);
-            });
-            
-            animated = true;
-        }
-
-        window.addEventListener('scroll', () => {
-            const statsSection = document.querySelector('.stats');
-            const rect = statsSection.getBoundingClientRect();
-            if (rect.top < window.innerHeight && rect.bottom > 0) {
-                animateStats();
-            }
-        });
-
-        // Toast Notification
-        function showToast() {
-            const toast = document.getElementById('toast');
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 4000);
-        }
-
-        // Achievement
-        function showAchievement() {
-            const achievement = document.getElementById('achievement');
-            achievement.classList.add('show');
-            setTimeout(() => achievement.classList.remove('show'), 5000);
-        }
-
-        // Theme Toggle
-        function toggleTheme() {
-            document.body.style.filter = document.body.style.filter === 'invert(1) hue-rotate(180deg)' ? '' : 'invert(1) hue-rotate(180deg)';
-        }
-
-        // Scroll to Top
-        function scrollToTop() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // Page Transition
-        function navigateWithTransition(url) {
-            document.body.style.opacity = '0';
-            setTimeout(() => window.location.href = url, 300);
-        }
-
-        // Stars Background
-        const starsCanvas = document.getElementById('stars');
-        const starsCtx = starsCanvas.getContext('2d');
-        starsCanvas.width = window.innerWidth;
-        starsCanvas.height = window.innerHeight;
-
-        const stars = Array.from({ length: 200 }, () => ({
-            x: Math.random() * starsCanvas.width,
-            y: Math.random() * starsCanvas.height,
-            radius: Math.random() * 1.5,
-            speed: Math.random() * 0.5 + 0.1,
-            opacity: Math.random()
-        }));
 
         function animateStars() {
-            starsCtx.clearRect(0, 0, starsCanvas.width, starsCanvas.height);
-            
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle = '#fff';
             stars.forEach(star => {
-                starsCtx.beginPath();
-                starsCtx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-                starsCtx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
-                starsCtx.fill();
-                
-                star.y += star.speed;
-                star.opacity = Math.sin(Date.now() * 0.001 + star.x) * 0.5 + 0.5;
-                
-                if (star.y > starsCanvas.height) {
-                    star.y = 0;
-                    star.x = Math.random() * starsCanvas.width;
-                }
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                ctx.fill();
+                star.y -= star.speed;
+                if (star.y < 0) star.y = height;
             });
-            
             requestAnimationFrame(animateStars);
         }
 
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
         animateStars();
 
-        // Interactive Particles
-        const particlesCanvas = document.getElementById('particles');
-        const particlesCtx = particlesCanvas.getContext('2d');
-        particlesCanvas.width = window.innerWidth;
-        particlesCanvas.height = window.innerHeight;
-
-        let mouseX = 0, mouseY = 0;
-        const particles = Array.from({ length: 50 }, () => ({
-            x: Math.random() * particlesCanvas.width,
-            y: Math.random() * particlesCanvas.height,
-            vx: (Math.random() - 0.5) * 2,
-            vy: (Math.random() - 0.5) * 2
-        }));
-
-        document.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-        });
-
-        function animateParticles() {
-            particlesCtx.clearRect(0, 0, particlesCanvas.width, particlesCanvas.height);
+        // --- 3. Typing Effect ---
+        const phrases = ["Explore the Unknown", "Simulate Reality", "Visualize Physics", "Understand the Cosmos"];
+        let phraseIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        
+        function initTypeWriter() {
+            const typedTextElement = document.getElementById('typedText');
+            const currentPhrase = phrases[phraseIndex];
             
-            particles.forEach((p, i) => {
-                const dx = mouseX - p.x;
-                const dy = mouseY - p.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                
-                if (dist < 150) {
-                    p.vx += dx * 0.0001;
-                    p.vy += dy * 0.0001;
-                }
-                
-                p.x += p.vx;
-                p.y += p.vy;
-                p.vx *= 0.99;
-                p.vy *= 0.99;
-                
-                if (p.x < 0 || p.x > particlesCanvas.width) p.vx *= -1;
-                if (p.y < 0 || p.y > particlesCanvas.height) p.vy *= -1;
-                
-                particlesCtx.beginPath();
-                particlesCtx.arc(p.x, p.y, 2, 0, Math.PI * 2);
-                particlesCtx.fillStyle = 'rgba(138, 43, 226, 0.5)';
-                particlesCtx.fill();
-                
-                particles.forEach((p2, j) => {
-                    if (i !== j) {
-                        const dx2 = p2.x - p.x;
-                        const dy2 = p2.y - p.y;
-                        const dist2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
+            if (isDeleting) {
+                typedTextElement.textContent = currentPhrase.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                typedTextElement.textContent = currentPhrase.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            let typeSpeed = isDeleting ? 50 : 100;
+
+            if (!isDeleting && charIndex === currentPhrase.length) {
+                isDeleting = true;
+                typeSpeed = 2000; // Pause at end
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                phraseIndex = (phraseIndex + 1) % phrases.length;
+                typeSpeed = 500;
+            }
+
+            setTimeout(initTypeWriter, typeSpeed);
+        }
+
+        // --- 4. Number Counters (Stats) ---
+        const observerOptions = { threshold: 0.5 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counters = entry.target.querySelectorAll('.stat-number');
+                    counters.forEach(counter => {
+                        const target = +counter.getAttribute('data-target');
+                        const duration = 2000; // 2 seconds
+                        const increment = target / (duration / 16);
                         
-                        if (dist2 < 100) {
-                            particlesCtx.beginPath();
-                            particlesCtx.moveTo(p.x, p.y);
-                            particlesCtx.lineTo(p2.x, p2.y);
-                            particlesCtx.strokeStyle = `rgba(138, 43, 226, ${0.2 * (1 - dist2 / 100)})`;
-                            particlesCtx.stroke();
-                        }
-                    }
-                });
+                        let current = 0;
+                        const updateCounter = () => {
+                            current += increment;
+                            if (current < target) {
+                                counter.textContent = Math.ceil(current);
+                                requestAnimationFrame(updateCounter);
+                            } else {
+                                counter.textContent = target;
+                            }
+                        };
+                        updateCounter();
+                    });
+                    observer.unobserve(entry.target);
+                }
             });
-            
-            requestAnimationFrame(animateParticles);
-        }
+        }, observerOptions);
 
-        animateParticles();
+        observer.observe(document.querySelector('.stats'));
 
-        // Tour Function
-        function showTour() {
-            alert('Welcome to CosmicLab! Use Ctrl+K for quick navigation, explore our simulations, and discover the wonders of physics!');
-        }
+        // --- 5. Mobile Menu ---
+        const menuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
 
-        // Resize handlers
-        window.addEventListener('resize', () => {
-            starsCanvas.width = window.innerWidth;
-            starsCanvas.height = window.innerHeight;
-            particlesCanvas.width = window.innerWidth;
-            particlesCanvas.height = window.innerHeight;
+        menuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            const isExpanded = navLinks.classList.contains('active');
+            menuBtn.setAttribute('aria-expanded', isExpanded);
         });
+
+        // --- 6. Command Palette (Ctrl+K) ---
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                const palette = document.getElementById('commandPalette');
+                palette.classList.toggle('active');
+                if (palette.classList.contains('active')) {
+                    document.getElementById('commandSearch').focus();
+                }
+            }
+            // Close on Escape
+            if (e.key === 'Escape') {
+                document.getElementById('commandPalette').classList.remove('active');
+            }
+        });
+
+        // Populate Command Palette
+        const commands = [
+            { icon: '🏠', text: 'Go Home', action: () => window.location.href = 'index.html' },
+            { icon: '🌌', text: 'Black Holes', action: () => window.location.href = 'blackholes.html' },
+            { icon: '🌙', text: 'Toggle Theme', action: () => toggleTheme() },
+        ];
+
+        const resultsContainer = document.getElementById('commandResults');
+        const commandInput = document.getElementById('commandSearch');
+
+        function renderCommands(filter = '') {
+            resultsContainer.innerHTML = '';
+            commands
+                .filter(cmd => cmd.text.toLowerCase().includes(filter.toLowerCase()))
+                .forEach(cmd => {
+                    const div = document.createElement('div');
+                    div.className = 'command-item';
+                    div.innerHTML = `<span class="command-icon">${cmd.icon}</span><span>${cmd.text}</span>`;
+                    div.onclick = () => {
+                        cmd.action();
+                        document.getElementById('commandPalette').classList.remove('active');
+                    };
+                    resultsContainer.appendChild(div);
+                });
+        }
+        
+        commandInput.addEventListener('input', (e) => renderCommands(e.target.value));
+        renderCommands(); // Initial render
+
+        // --- 7. Scroll Progress Bar ---
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progressBar').style.width = scrolled + "%";
+            
+            // Navbar glass effect
+            const nav = document.querySelector('nav');
+            if (winScroll > 50) nav.classList.add('scrolled');
+            else nav.classList.remove('scrolled');
+        });
+
+        // --- 8. Helper Functions ---
+        function toggleTheme() {
+            // Simple visual toggle for demo (expand logic for real implementation)
+            document.body.style.filter = document.body.style.filter === 'invert(1)' ? 'invert(0)' : 'invert(1)';
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function navigateWithTransition(url) {
+            // Add a slide-out class here if desired
+            window.location.href = url;
+        }
+
+        function handleSubscribe(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.textContent;
+            btn.textContent = 'Subscribed!';
+            btn.style.background = 'var(--secondary)';
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = ''; // reset
+                e.target.reset();
+            }, 2000);
+        }
     </script>
 </body>
 </html>

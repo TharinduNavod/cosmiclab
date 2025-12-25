@@ -1,0 +1,28 @@
+<main>
+    <section class="page-header">
+        <h1 class="page-title">Gravitational Waves</h1>
+        <p>Ripples in the Fabric of Spacetime</p>
+    </section>
+
+    <div class="content-container">
+        <div class="info-text">
+            <p> First detected by LIGO in 2015, these waves are created by cataclysmic events like colliding black holes or neutron stars.</p>
+        </div>
+
+        <div class="simulation-box" style="text-align: center;">
+            <div class="ripple-container" style="position: relative; width: 100%; height: 200px; display: flex; justify-content: center; align-items: center;">
+                <div style="position: absolute; width: 50px; height: 50px; border: 2px solid var(--accent); border-radius: 50%; animation: ripple 2s infinite;"></div>
+                <div style="position: absolute; width: 50px; height: 50px; border: 2px solid var(--accent); border-radius: 50%; animation: ripple 2s infinite 0.5s;"></div>
+                <div style="position: absolute; width: 50px; height: 50px; border: 2px solid var(--accent); border-radius: 50%; animation: ripple 2s infinite 1s;"></div>
+                <div style="z-index: 2;">⚫ ⚫</div>
+            </div>
+            <style>
+                @keyframes ripple {
+                    0% { transform: scale(1); opacity: 1; }
+                    100% { transform: scale(6); opacity: 0; }
+                }
+            </style>
+            <p>Visualizing a Binary Black Hole Merger</p>
+        </div>
+    </div>
+</main>

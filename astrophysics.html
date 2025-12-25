@@ -1,0 +1,36 @@
+<main>
+    <section class="page-header">
+        <h1 class="page-title">Astrophysics</h1>
+        <p>Stellar Evolution: From Nebula to Black Hole</p>
+    </section>
+
+    <div class="content-container">
+        <div class="simulation-box">
+            <h3>Star Lifecycle Viewer</h3>
+            <input type="range" id="lifeSlider" min="0" max="3" step="1" value="0">
+            <div id="starVisual" style="margin: 20px auto; width: 100px; height: 100px; border-radius: 50%; background: #fff; box-shadow: 0 0 20px #fff; transition: all 1s ease;"></div>
+            <h2 id="starStage" style="text-align: center; color: var(--accent);">Protostar</h2>
+            <p id="starDesc" style="text-align: center; height: 60px;">A cloud of gas and dust collapsing under gravity.</p>
+        </div>
+    </div>
+
+    <script>
+        const stages = [
+            { name: "Protostar", color: "#ddd", shadow: "#fff", size: "100px", desc: "Gas collapsing. Core heats up." },
+            { name: "Main Sequence (Sun)", color: "#ffcc00", shadow: "orange", size: "100px", desc: "Stable fusion of Hydrogen into Helium." },
+            { name: "Red Giant", color: "#ff4444", shadow: "red", size: "180px", desc: "Running out of fuel. Expands and cools." },
+            { name: "White Dwarf", color: "#aaddff", shadow: "#fff", size: "30px", desc: "Core remnant. Dense and hot." }
+        ];
+
+        document.getElementById('lifeSlider').addEventListener('input', (e) => {
+            const s = stages[e.target.value];
+            const v = document.getElementById('starVisual');
+            v.style.background = s.color;
+            v.style.boxShadow = `0 0 30px ${s.shadow}`;
+            v.style.width = s.size;
+            v.style.height = s.size;
+            document.getElementById('starStage').innerText = s.name;
+            document.getElementById('starDesc').innerText = s.desc;
+        });
+    </script>
+</main>

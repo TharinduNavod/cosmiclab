@@ -1,0 +1,60 @@
+<main>
+    <section class="page-header">
+        <h1 class="page-title">Particle Physics</h1>
+        <p>The Standard Model, Quarks, and The Higgs Boson</p>
+    </section>
+
+    <div class="content-container">
+        <div class="simulation-box" id="colliderBox">
+            <h3>Large Hadron Collider Sim</h3>
+            <p>Click "Smash" to collide protons.</p>
+            <div id="collisionZone" style="height: 200px; display: flex; align-items: center; justify-content: center; position: relative;">
+                <div class="particle p1" style="width: 20px; height: 20px; background: red; border-radius: 50%; position: absolute; left: 10px; opacity: 0;"></div>
+                <div class="particle p2" style="width: 20px; height: 20px; background: red; border-radius: 50%; position: absolute; right: 10px; opacity: 0;"></div>
+                <div id="explosion" style="font-size: 3rem; opacity: 0;">💥</div>
+            </div>
+            <button class="btn" onclick="smashParticles()">Smash Particles</button>
+            <div id="discovery" style="margin-top: 1rem; color: var(--accent);"></div>
+        </div>
+
+        <div class="info-text">
+            <h3>The Standard Model</h3>
+            <p>
+
+[Image of Standard Model of Particle Physics]
+ The universe is made of 12 fundamental fermions (matter particles) and 4 fundamental bosons (force carriers), plus the Higgs Boson which gives particles mass.</p>
+        </div>
+    </div>
+
+    <script>
+        function smashParticles() {
+            const p1 = document.querySelector('.p1');
+            const p2 = document.querySelector('.p2');
+            const exp = document.getElementById('explosion');
+            const disc = document.getElementById('discovery');
+            
+            // Reset
+            p1.style.transition = 'none'; p2.style.transition = 'none';
+            p1.style.left = '10px'; p2.style.right = '10px';
+            p1.style.opacity = '1'; p2.style.opacity = '1';
+            exp.style.opacity = '0';
+            disc.innerText = '';
+
+            setTimeout(() => {
+                p1.style.transition = 'all 0.5s ease-in';
+                p2.style.transition = 'all 0.5s ease-in';
+                p1.style.left = '48%';
+                p2.style.right = '48%';
+                
+                setTimeout(() => {
+                    p1.style.opacity = '0'; p2.style.opacity = '0';
+                    exp.style.opacity = '1';
+                    exp.style.transform = 'scale(1.5)';
+                    
+                    const particles = ['Quark-Gluon Plasma detected!', 'Higgs Boson Candidate found!', 'Anti-matter created!'];
+                    disc.innerText = particles[Math.floor(Math.random() * particles.length)];
+                }, 500);
+            }, 50);
+        }
+    </script>
+</main>

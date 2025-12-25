@@ -1,0 +1,37 @@
+<main>
+    <section class="page-header">
+        <h1 class="page-title">Exoplanets</h1>
+        <p>The Search for Alien Worlds</p>
+    </section>
+
+    <div class="content-container">
+        <div class="simulation-box">
+            <h3>Goldilocks Zone Calculator</h3>
+            <p>Adjust distance from star to see if water can exist.</p>
+            <input type="range" id="orbitRange" min="0.5" max="3" step="0.1" value="1">
+            <div style="margin-top: 2rem; font-size: 1.5rem; text-align: center;">
+                Distance: <span id="distVal">1.0</span> AU <br>
+                Status: <span id="habitableStatus" style="font-weight: bold; color: #0f0;">Habitable</span>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('orbitRange').addEventListener('input', (e) => {
+            const dist = parseFloat(e.target.value);
+            document.getElementById('distVal').innerText = dist;
+            const status = document.getElementById('habitableStatus');
+            
+            if(dist < 0.8) {
+                status.innerText = "Too Hot! (Water Evaporates)";
+                status.style.color = "red";
+            } else if (dist > 1.5) {
+                status.innerText = "Too Cold! (Water Freezes)";
+                status.style.color = "cyan";
+            } else {
+                status.innerText = "Habitable (Liquid Water)";
+                status.style.color = "#0f0";
+            }
+        });
+    </script>
+</main>

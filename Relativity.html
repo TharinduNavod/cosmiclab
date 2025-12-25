@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relativity - CosmicLab</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --accent: #4facfe;
+            --dark: #0a0a1a;
+            --light: #fff;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: radial-gradient(ellipse at center, #1a1a3e 0%, #0a0a1a 100%);
+            color: var(--light);
+            overflow-x: hidden;
+        }
+
+        body.light-mode {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            color: #1a1a2e;
+        }
+
+        #relativity-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 10, 26, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(79, 172, 254, 0.3);
+            z-index: 1000;
+        }
+
+        body.light-mode nav {
+            background: rgba(255, 255, 255, 0.85);
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #4facfe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        body.light-mode nav a {
+            color: #1a1a2e;
+        }
+
+        nav a:hover {
+            background: rgba(79, 172, 254, 0.2);
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(79, 172, 254, 0.2);
+            border: none;
+            color: var(--light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        body.light-mode .icon-btn {
+            color: #1a1a2e;
+        }
+
+        .icon-btn:hover {
+            background: rgba(79, 172, 254, 0.4);
+            transform: scale(1.1);
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 8rem 2rem 4rem;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #4facfe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+        }
+
+        .intro {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 4rem;
+            font-size: 1.2rem;
+            color: #b8b8d4;
+            line-height: 1.8;
+        }
+
+        body.light-mode .intro {
+            color: #6c757d;
+        }
+
+        .section {
+            background: rgba(26, 10, 46, 0.6);
+            border: 1px solid rgba(79, 172, 254, 0.3);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            backdrop-filter: blur(10px);
+        }
+
+        body.light-mode .section {
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .section h2 {
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+        }
+
+        .section p {
+            color: #b8b8d4;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        body.light-mode .section p {
+            color: #6c757d;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .info-card {
+            background: rgba(10, 10, 26, 0.8);
+            border: 1px solid rgba(79, 172, 254, 0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        body.light-mode .info-card {
+            background: rgba(248, 249, 250, 0.9);
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            box-shadow: 0 10px 30px rgba(79, 172, 254, 0.3);
+        }
+
+        .info-card h3 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .info-card p {
+            color: #b8b8d4;
+            line-height: 1.6;
+        }
+
+        body.light-mode .info-card p {
+            color: #6c757d;
+        }
+
+        .interactive-demo {
+            background: rgba(10, 10, 26, 0.8);
+            border: 2px solid rgba(79, 172, 254, 0.5);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        body.light-mode .interactive-demo {
+            background: rgba(248, 249, 250, 0.9);
+        }
+
+        .demo-canvas {
+            width: 100%;
+            height: 400px;
+            background: #000;
+            border-radius: 15px;
+            margin: 1rem 0;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        .control-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .control-group label {
+            display: block;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: rgba(79, 172, 254, 0.3);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            cursor: pointer;
+        }
+
+        .value-display {
+            color: #b8b8d4;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        body.light-mode .value-display {
+            color: #6c757d;
+        }
+
+        .equation-box {
+            background: rgba(26, 10, 46, 0.8);
+            border: 1px solid rgba(79, 172, 254, 0.5);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        body.light-mode .equation-box {
+            background: rgba(248, 249, 250, 0.9);
+        }
+
+        .equation {
+            font-size: 1.8rem;
+            color: var(--accent);
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: var(--light);
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(79, 172, 254, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem 1.5rem;
+            }
+            .nav-links {
+                display: none;
+            }
+            .section {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="relativity-canvas"></canvas>
+
+    <nav>
+        <div class="nav-brand">⚡ CosmicLab</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="relativity.html">Relativity</a>
+            <a href="particle.html">Particles</a>
+            <a href="cosmology.html">Cosmology</a>
+        </div>
+        <button class="icon-btn" onclick="toggleTheme()">🌓</button>
+    </nav>
+
+    <div class="container">
+        <h1>⚡ Theory of Relativity</h1>
+        
+        <div class="intro">
+            Einstein's revolutionary theories that shattered our understanding of space, time, and reality itself. Nothing moves faster than light, time is relative, and gravity is the curvature of spacetime.
+        </div>
+
+        <div class="section">
+            <h2>Special Relativity (1905)</h2>
+            <p>Einstein's first revolution: space and time are not absolute but relative to the observer's motion. At high speeds, bizarre effects emerge that challenge our everyday intuitions.</p>
+            
+            <div class="grid-2">
+                <div class="info-card">
+                    <h3>⏱️ Time Dilation</h3>
+                    <p>Moving clocks run slower. Travel near light speed and time crawls. For you, a year might pass while centuries elapse on Earth.</p>
+                </div>
+                <div class="info-card">
+                    <h3>📏 Length Contraction</h3>
+                    <p>Objects shrink in the direction of motion at high speeds. A spaceship traveling at 90% light speed would appear half its resting length.</p>
+                </div>
+                <div class="info-card">
+                    <h3>🚀 Mass-Energy Equivalence</h3>
+                    <p>E = mc². Mass and energy are interchangeable. A small amount of mass contains enormous energy—the principle behind nuclear power.</p>
+                </div>
+                <div class="info-card">
+                    <h3>⚡ Light Speed Limit</h3>
+                    <p>Nothing with mass can reach light speed. As you accelerate, your mass effectively increases, requiring infinite energy to reach c.</p>
+                </div>
+            </div>
+
+            <div class="equation-box">
+                <h3 style="color: var(--accent);">The Twin Paradox</h3>
+                <div class="equation">
+                    t' = t / √(1 - v²/c²)
+                </div>
+                <p style="color: #b8b8d4; margin-top: 1rem;">
+                    One twin travels at high speed while the other stays on Earth. When they reunite, the traveling twin has aged less—time dilation is real!
+                </p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Interactive Time Dilation Calculator</h2>
+            <div class="interactive-demo">
+                <p style="color: #b8b8d4; margin-bottom: 1rem;">See how time slows down at high speeds:</p>
+                
+                <div class="controls">
+                    <div class="control-group">
+                        <label>Velocity (% of light speed)</label>
+                        <input type="range" min="0" max="99" value="50" id="velocitySlider">
+                        <div class="value-display">Speed: <span id="velocityValue">50</span>% c</div>
+                    </div>
+                    <div class="control-group">
+                        <label>Time on Spaceship (years)</label>
+                        <input type="range" min="1" max="50" value="10" id="shipTimeSlider">
+                        <div class="value-display">Ship Time: <span id="shipTimeValue">10</span> years</div>
+                    </div>
+                </div>
+
+                <canvas id="dilation-canvas" class="demo-canvas"></canvas>
+
+                <div class="grid-2" style="margin-top: 1.5rem;">
+                    <div style="color: #b8b8d4;">
+                        <strong style="color: var(--accent);">Time on Earth:</strong><br>
+                        <span id="earthTimeDisplay" style="font-size: 1.5rem; color: var(--accent);">11.5 years</span>
+                    </div>
+                    <div style="color: #b8b8d4;">
+                        <strong style="color: var(--accent);">Lorentz Factor (γ):</strong><br>
+                        <span id="lorentzDisplay" style="font-size: 1.5rem; color: var(--accent);">1.15x</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>General Relativity (1915)</h2>
+            <p>Einstein's masterpiece: gravity isn't a force—it's the curvature of spacetime caused by mass and energy. Massive objects bend the fabric of reality itself.</p>
+            
+            <div class="equation-box">
+                <h3 style="color: var(--accent);">Einstein Field Equations</h3>
+                <div class="equation">
+                    G<sub>μν</sub> + Λg<sub>μν</sub> = 8πG/c⁴ T<sub>μν</sub>
+                </div>
+                <p style="color: #b8b8d4; margin-top: 1rem;">
+                    This elegant equation describes how matter and energy curve spacetime, and how that curvature tells matter how to move. Geometry becomes physics.
+                </p>
+            </div>
+
+            <div class="grid-2">
+                <div class="info-card">
+                    <h3>🌍 Spacetime Curvature</h3>
+                    <p>Massive objects create "dips" in spacetime. Planets orbit stars not because of a force, but because they follow curves in spacetime geometry.</p>
+                </div>
+                <div class="info-card">
+                    <h3>🌅 Gravitational Time Dilation</h3>
+                    <p>Time runs slower in stronger gravitational fields. On Earth's surface, time moves slightly slower than in orbit—GPS satellites must account for this!</p>
+                </div>
+                <div class="info-card">
+                    <h3>💫 Light Bending</h3>
+                    <p>Light follows curved spacetime around massive objects. Stars behind the Sun appear shifted—the 1919 eclipse observation that proved Einstein right.</p>
+                </div>
+                <div class="info-card">
+                    <h3>🌌 Gravitational Waves</h3>
+                    <p>Accelerating masses create ripples in spacetime that propagate at light speed. LIGO detected these waves from merging black holes in 2015.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Spacetime Warping Visualization</h2>
+            <div class="interactive-demo">
+                <p style="color: #b8b8d4; margin-bottom: 1rem;">See how mass curves the fabric of spacetime:</p>
+                
+                <canvas id="spacetime-canvas" class="demo-canvas"></canvas>
+                
+                <div class="controls">
+                    <div class="control-group">
+                        <label>Central Mass (Solar Masses)</label>
+                        <input type="range" min="1" max="30" value="10" id="massSlider">
+                        <div class="value-display">Mass: <span id="massValue">10</span> M☉</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Real-World Applications</h2>
+            <div class="grid-2">
+                <div class="info-card">
+                    <h3>🛰️ GPS Navigation</h3>
+                    <p>GPS satellites experience both special and general relativistic effects. Without corrections, GPS would drift by 10 km per day!</p>
+                </div>
+                <div class="info-card">
+                    <h3>⚛️ Nuclear Energy</h3>
+                    <p>E=mc² enables nuclear power and weapons. The Sun's energy comes from converting 4 million tons of mass to energy every second.</p>
+                </div>
+                <div class="info-card">
+                    <h3>🔬 Particle Accelerators</h3>
+                    <p>At CERN, particles moving at 99.9999991% light speed live longer due to time dilation, allowing scientists to study them.</p>
+                </div>
+                <div class="info-card">
+                    <h3>🌠 Gravitational Lensing</h3>
+                    <p>Astronomers use massive galaxy clusters as natural telescopes, magnifying distant objects through spacetime curvature.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Mind-Bending Predictions</h2>
+            <p style="margin-bottom: 2rem;">General relativity makes predictions that seem like science fiction but are real:</p>
+            
+            <div style="line-height: 2;">
+                <p><strong style="color: var(--accent);">🕳️ Black Holes:</strong> Spacetime curves so severely that nothing, not even light, can escape. Time stops at the event horizon.</p>
+                
+                <p><strong style="color: var(--accent);">🌌 Expanding Universe:</strong> Space itself is expanding, carrying galaxies apart. Einstein initially rejected this, calling it his "biggest blunder."</p>
+                
+                <p><strong style="color: var(--accent);">⏰ Time Travel (Forward):</strong> Travel fast enough or stay near a black hole, and you effectively travel to the future.</p>
+                
+                <p><strong style="color: var(--accent);">🌊 Frame Dragging:</strong> Rotating massive objects literally drag spacetime around with them. Earth's rotation drags spacetime along!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+        }
+
+        // Background animation
+        const canvas = document.getElementById('relativity-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const gridLines = [];
+        for (let i = 0; i < 20; i++) {
+            gridLines.push({
+                y: (i / 20) * canvas.height,
+                offset: 0,
+                speed: Math.random() * 0.5 + 0.5
+            });
+        }
+
+        function animateBackground() {
+            ctx.fillStyle = 'rgba(10, 10, 26, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            gridLines.forEach(line => {
+                line.offset += line.speed;
+                if (line.offset > canvas.width) line.offset = 0;
+
+                ctx.strokeStyle = 'rgba(79, 172, 254, 0.2)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                
+                for (let x = 0; x < canvas.width; x += 20) {
+                    const wave = Math.sin((x + line.offset) * 0.01) * 30;
+                    if (x === 0) {
+                        ctx.moveTo(x, line.y + wave);
+                    } else {
+                        ctx.lineTo(x, line.y + wave);
+                    }
+                }
+                ctx.stroke();
+            });
+
+            requestAnimationFrame(animateBackground);
+        }
+
+        // Time dilation calculator
+        const velocitySlider = document.getElementById('velocitySlider');
+        const shipTimeSlider = document.getElementById('shipTimeSlider');
+        const dilationCanvas = document.getElementById('dilation-canvas');
+        const dilationCtx = dilationCanvas.getContext('2d');
+        dilationCanvas.width = dilationCanvas.offsetWidth;
+        dilationCanvas.height = 400;
+
+        function updateTimeDilation() {
+            const v = parseFloat(velocitySlider.value) / 100;
+            const shipTime = parseFloat(shipTimeSlider.value);
+            
+            const lorentz = 1 / Math.sqrt(1 - v * v);
+            const earthTime = shipTime * lorentz;
+            
+            document.getElementById('velocityValue').textContent = (v * 100).toFixed(0);
+            document.getElementById('shipTimeValue').textContent = shipTime;
+            document.getElementById('earthTimeDisplay').textContent = earthTime.toFixed(2) + ' years';
+            document.getElementById('lorentzDisplay').textContent = lorentz.toFixed(2) + 'x';
+            
+            drawTimeDilation(v, shipTime, earthTime);
+        }
+
+        function drawTimeDilation(v, shipTime, earthTime) {
+            dilationCtx.fillStyle = '#000';
+            dilationCtx.fillRect(0, 0, dilationCanvas.width, dilationCanvas.height);
+            
+            const centerY = dilationCanvas.height / 2;
+            
+            // Earth timeline
+            dilationCtx.strokeStyle = 'rgba(79, 172, 254, 0.6)';
+            dilationCtx.lineWidth = 3;
+            dilationCtx.beginPath();
+            dilationCtx.moveTo(50, centerY - 80);
+            dilationCtx.lineTo(dilationCanvas.width - 50, centerY - 80);
+            dilationCtx.stroke();
+            
+            // Ship timeline
+            dilationCtx.strokeStyle = 'rgba(240, 147, 251, 0.6)';
+            dilationCtx.beginPath();
+            dilationCtx.moveTo(50, centerY + 80);
+            dilationCtx.lineTo(dilationCanvas.width - 50, centerY + 80);
+            dilationCtx.stroke();
+            
+            // Labels
+            dilationCtx.fillStyle = 'rgba(79, 172, 254, 1)';
+            dilationCtx.font = '16px Inter';
+            dilationCtx.fillText('Earth Observer', 50, centerY - 100);
+            
+            dilationCtx.fillStyle = 'rgba(240, 147, 251, 1)';
+            dilationCtx.fillText('Spaceship Traveler', 50, centerY + 100);
+            
+            // Time markers
+            const shipProgress = (shipTime / 50) * (dilationCanvas.width - 100);
+            const earthProgress = (earthTime / 50) * (dilationCanvas.width - 100);
+            
+            dilationCtx.fillStyle = 'rgba(79, 172, 254, 0.8)';
+            dilationCtx.beginPath();
+            dilationCtx.arc(50 + Math.min(earthProgress, dilationCanvas.width - 100), centerY - 80, 8, 0, Math.PI * 2);
+            dilationCtx.fill();
+            
+            dilationCtx.fillStyle = 'rgba(240, 147, 251, 0.8)';
+            dilationCtx.beginPath();
+            dilationCtx.arc(50 + shipProgress, centerY + 80, 8, 0, Math.PI * 2);
+            dilationCtx.fill();
+        }
+
+        velocitySlider.addEventListener('input', updateTimeDilation);
+        shipTimeSlider.addEventListener('input', updateTimeDilation);
+
+        // Spacetime curvature
+        const spacetimeCanvas = document.getElementById('spacetime-canvas');
+        const spacetimeCtx = spacetimeCanvas.getContext('2d');
+        spacetimeCanvas.width = spacetimeCanvas.offsetWidth;
+        spacetimeCanvas.height = 400;
+
+        const massSlider = document.getElementById('massSlider');
+
+        function drawSpacetime() {
+            const mass = parseFloat(massSlider.value);
+            document.getElementById('massValue').textContent = mass;
+            
+            spacetimeCtx.fillStyle = '#000';
+            spacetimeCtx.fillRect(0, 0, spacetimeCanvas.width, spacetimeCanvas.height);
+            
+            const centerX = spacetimeCanvas.width / 2;
+            const centerY = spacetimeCanvas.height / 2;
+            
+            // Draw grid showing curvature
+            for (let r = 50; r < 300; r += 30) {
+                spacetimeCtx.strokeStyle = `rgba(79, 172, 254, ${0.4 - r / 1000})`;
+                spacetimeCtx.lineWidth = 2;
+                spacetimeCtx.beginPath();
+                
+                for (let angle = 0; angle <= Math.PI * 2; angle += 0.1) {
+                    const warp = mass * 2000 / (r * r);
+                    const x = centerX + Math.cos(angle) * r;
+                    const y = centerY + Math.sin(angle) * r + warp;
+                    
+                    if (angle === 0) {
+                        spacetimeCtx.moveTo(x, y);
+                    } else {
+                        spacetimeCtx.lineTo(x, y);
+                    }
+                }
+                spacetimeCtx.closePath();
+                spacetimeCtx.stroke();
+            }
+            
+            // Draw central mass
+            const gradient = spacetimeCtx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 30);
+            gradient.addColorStop(0, 'rgba(240, 147, 251, 1)');
+            gradient.addColorStop(1, 'rgba(138, 43, 226, 0.3)');
+            
+            spacetimeCtx.fillStyle = gradient;
+            spacetimeCtx.beginPath();
+            spacetimeCtx.arc(centerX, centerY, 30, 0, Math.PI * 2);
+            spacetimeCtx.fill();
+        }
+
+        massSlider.addEventListener('input', drawSpacetime);
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        window.addEventListener('load', () => {
+            animateBackground();
+            updateTimeDilation();
+            drawSpacetime();
+        });
+    </script>
+</body>
+</html>

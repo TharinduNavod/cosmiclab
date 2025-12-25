@@ -1,0 +1,42 @@
+<main>
+    <section class="page-header">
+        <h1 class="page-title">String Theory</h1>
+        <p>11 Dimensions and The Multiverse</p>
+    </section>
+
+    <div class="content-container">
+        <div class="info-text">
+            <p>String theory proposes that the fundamental constituents of the universe are one-dimensional "strings" rather than point-like particles. The way these strings vibrate determines the particle's properties (mass, charge, spin).</p>
+        </div>
+
+        <div class="simulation-box">
+            <h3>Vibrating String Simulation</h3>
+            <canvas id="stringCanvas" width="600" height="200" style="width:100%; border-bottom: 2px solid var(--primary);"></canvas>
+            <p style="text-align:center; font-size: 0.8rem;">Different frequencies correspond to different particles.</p>
+        </div>
+    </div>
+
+    <script>
+        const c = document.getElementById('stringCanvas');
+        const ctx = c.getContext('2d');
+        let time = 0;
+
+        function animate() {
+            ctx.clearRect(0, 0, c.width, c.height);
+            ctx.beginPath();
+            ctx.strokeStyle = '#f093fb';
+            ctx.lineWidth = 3;
+            
+            for (let x = 0; x < c.width; x++) {
+                // Combine Sine waves to simulate harmonics
+                let y = 100 + Math.sin(x * 0.05 + time) * 30 * Math.sin(time * 0.5);
+                if (x === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+            time += 0.2;
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</main>
