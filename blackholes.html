@@ -3,641 +3,538 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Black Holes - CosmicLab</title>
+    <title>Black Holes | CosmicLab - Advanced Physics Laboratory</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         :root {
-            --primary: #667eea;
-            --secondary: #764ba2;
-            --accent: #f093fb;
-            --dark: #0a0a1a;
-            --light: #fff;
-            --glow: rgba(138, 43, 226, 0.6);
+            --bg-primary: #0A0E27;
+            --bg-secondary: #151933;
+            --accent-blue: #3B82F6;
+            --accent-purple: #8B5CF6;
+            --accent-orange: #F59E0B;
+            --accent-cyan: #06B6D4;
+            --accent-red: #EF4444;
+            --text-primary: #F8FAFC;
+            --text-secondary: #94A3B8;
+            --border: rgba(148, 163, 184, 0.1);
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: radial-gradient(ellipse at center, #1a0a2e 0%, #0a0a1a 100%);
-            color: var(--light);
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             overflow-x: hidden;
+            line-height: 1.6;
         }
 
-        body.light-mode {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            color: #1a1a2e;
-        }
-
-        #blackhole-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-        }
+        .stars-bg { position: fixed; width: 100%; height: 100%; top: 0; left: 0; z-index: 0; }
+        .star { position: absolute; width: 2px; height: 2px; background: white; border-radius: 50%; animation: twinkle 3s infinite; }
+        @keyframes twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
 
         nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            padding: 1rem 3rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(10, 10, 26, 0.85);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(138, 43, 226, 0.3);
-            z-index: 1000;
+            position: fixed; top: 0; width: 100%; padding: 1.5rem 5%;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(10, 14, 39, 0.8); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border); z-index: 1000; transition: all 0.3s;
         }
 
-        body.light-mode nav {
-            background: rgba(255, 255, 255, 0.85);
+        .logo {
+            font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            display: flex; align-items: center; gap: 0.5rem; text-decoration: none;
         }
 
-        .nav-brand {
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #667eea 0%, #f093fb 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-weight: 500; font-size: 0.95rem; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--text-primary); }
 
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-        }
-
-        nav a {
-            color: var(--light);
-            text-decoration: none;
-            font-weight: 500;
-            padding: 0.5rem 1.5rem;
-            border-radius: 25px;
-            transition: all 0.3s ease;
-        }
-
-        body.light-mode nav a {
-            color: #1a1a2e;
-        }
-
-        nav a:hover {
-            background: rgba(138, 43, 226, 0.3);
-        }
-
-        .icon-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(138, 43, 226, 0.2);
-            border: none;
-            color: var(--light);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        body.light-mode .icon-btn {
-            color: #1a1a2e;
-        }
-
-        .icon-btn:hover {
-            background: rgba(138, 43, 226, 0.4);
-            transform: scale(1.1);
-        }
-
-        .container {
-            position: relative;
-            z-index: 1;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 8rem 2rem 4rem;
+        header {
+            min-height: 70vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
+            padding: 10rem 5% 4rem; position: relative; z-index: 1;
         }
 
         h1 {
-            font-size: clamp(2.5rem, 6vw, 4.5rem);
-            text-align: center;
-            background: linear-gradient(135deg, #667eea 0%, #f093fb 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 2rem;
+            font-family: 'Space Grotesk', sans-serif; font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 800; line-height: 1.1; margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--text-primary), var(--accent-purple));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
 
-        .intro {
-            text-align: center;
-            max-width: 800px;
-            margin: 0 auto 4rem;
-            font-size: 1.2rem;
-            color: #b8b8d4;
-            line-height: 1.8;
+        .subtitle { font-size: 1.2rem; color: var(--accent-blue); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 1rem; font-weight: 600; }
+        .intro { max-width: 800px; margin: 0 auto 2rem; font-size: 1.15rem; color: var(--text-secondary); line-height: 1.8; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 4rem 5%; position: relative; z-index: 1; }
+        .section-title { font-family: 'Space Grotesk', sans-serif; font-size: 2.5rem; margin-bottom: 3rem; font-weight: 700; }
+        .gradient-text { background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* Lab Styles */
+        .lab-container {
+            background: rgba(21, 25, 51, 0.6); backdrop-filter: blur(20px);
+            border: 1px solid var(--border); border-radius: 24px; padding: 3rem; margin-bottom: 6rem;
         }
 
-        body.light-mode .intro {
-            color: #6c757d;
+        .lab-tabs { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+        .lab-tab {
+            padding: 1rem 2rem; background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 12px;
+            color: var(--text-secondary); cursor: pointer; transition: all 0.3s;
+            font-weight: 600; font-size: 0.95rem;
+        }
+        .lab-tab:hover { background: rgba(59, 130, 246, 0.2); color: var(--text-primary); }
+        .lab-tab.active {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: white; border-color: transparent; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
         }
 
-        .section {
-            background: rgba(26, 10, 46, 0.6);
-            border: 1px solid rgba(138, 43, 226, 0.3);
-            border-radius: 20px;
-            padding: 3rem;
-            margin-bottom: 3rem;
-            backdrop-filter: blur(10px);
+        .lab-content { display: none; }
+        .lab-content.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .sim-header { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+        .sim-header h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; margin-bottom: 0.75rem; color: var(--accent-blue); }
+        .sim-header p { color: var(--text-secondary); line-height: 1.7; }
+
+        .sim-screen {
+            background: #000; height: 500px; border-radius: 16px;
+            position: relative; overflow: hidden; margin-bottom: 2rem; border: 1px solid var(--border);
         }
 
-        body.light-mode .section {
-            background: rgba(255, 255, 255, 0.8);
+        .sim-overlay {
+            position: absolute; top: 15px; left: 15px;
+            background: rgba(10, 14, 39, 0.9); backdrop-filter: blur(10px);
+            padding: 1rem; border-radius: 12px; border: 1px solid rgba(59, 130, 246, 0.3); z-index: 10;
         }
 
-        .section h2 {
-            color: var(--accent);
-            margin-bottom: 1.5rem;
-            font-size: 2rem;
+        .overlay-item { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; font-size: 0.9rem; }
+        .overlay-item:last-child { margin-bottom: 0; }
+        .overlay-label { color: var(--text-secondary); }
+        .overlay-value { color: var(--accent-cyan); font-weight: 600; font-family: 'Space Grotesk', sans-serif; }
+
+        .sim-controls {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem; padding: 2rem; background: rgba(10, 14, 39, 0.6); border-radius: 16px; margin-bottom: 2rem;
         }
 
-        .section p {
-            color: #b8b8d4;
-            line-height: 1.8;
-            margin-bottom: 1rem;
-        }
-
-        body.light-mode .section p {
-            color: #6c757d;
-        }
-
-        .interactive-demo {
-            background: rgba(10, 10, 26, 0.8);
-            border: 2px solid rgba(138, 43, 226, 0.5);
-            border-radius: 20px;
-            padding: 2rem;
-            margin: 2rem 0;
-        }
-
-        body.light-mode .interactive-demo {
-            background: rgba(248, 249, 250, 0.9);
-        }
-
-        .demo-canvas {
-            width: 100%;
-            height: 400px;
-            background: #000;
-            border-radius: 15px;
-            margin: 1rem 0;
-        }
-
-        .controls {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            margin-top: 1.5rem;
-        }
-
-        .control-group {
-            flex: 1;
-            min-width: 200px;
-        }
-
+        .control-group { display: flex; flex-direction: column; }
         .control-group label {
-            display: block;
-            color: var(--accent);
-            margin-bottom: 0.5rem;
-            font-weight: 600;
+            display: flex; justify-content: space-between; align-items: center;
+            color: var(--text-primary); font-weight: 600; margin-bottom: 0.75rem; font-size: 0.95rem;
+        }
+        .control-value { color: var(--accent-orange); font-family: 'Space Grotesk', sans-serif; }
+
+        input[type=range] {
+            width: 100%; height: 8px; background: rgba(59, 130, 246, 0.2);
+            border-radius: 5px; outline: none; -webkit-appearance: none;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            cursor: pointer; box-shadow: 0 2px 10px rgba(59, 130, 246, 0.5);
         }
 
-        input[type="range"] {
-            width: 100%;
-            height: 8px;
-            border-radius: 5px;
-            background: rgba(138, 43, 226, 0.3);
-            outline: none;
-            -webkit-appearance: none;
+        .sim-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem; }
+        .sim-btn {
+            padding: 0.875rem 1.75rem; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            border: none; border-radius: 12px; color: white; font-weight: 600;
+            cursor: pointer; transition: all 0.3s; font-size: 0.95rem;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .sim-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5); }
+        .sim-btn.secondary {
+            background: rgba(59, 130, 246, 0.1); border: 2px solid rgba(59, 130, 246, 0.3); color: var(--accent-blue);
         }
 
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            cursor: pointer;
+        .metrics-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 2rem;
+        }
+        .metric-card {
+            background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 1.5rem; border-radius: 12px; text-align: center;
+        }
+        .metric-label {
+            color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.5rem;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .metric-value {
+            font-size: 1.75rem; color: var(--accent-cyan);
+            font-family: 'Space Grotesk', sans-serif; font-weight: 700;
         }
 
-        .value-display {
-            color: #b8b8d4;
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
+        footer {
+            background: rgba(21, 25, 51, 0.8); padding: 3rem 5%;
+            border-top: 1px solid var(--border); text-align: center;
+            color: var(--text-secondary); position: relative; z-index: 1;
         }
 
-        body.light-mode .value-display {
-            color: #6c757d;
-        }
-
-        .grid-2 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin: 2rem 0;
-        }
-
-        .info-card {
-            background: rgba(10, 10, 26, 0.8);
-            border: 1px solid rgba(138, 43, 226, 0.3);
-            border-radius: 15px;
-            padding: 2rem;
-            transition: all 0.3s ease;
-        }
-
-        body.light-mode .info-card {
-            background: rgba(248, 249, 250, 0.9);
-        }
-
-        .info-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent);
-            box-shadow: 0 10px 30px var(--glow);
-        }
-
-        .info-card h3 {
-            color: var(--accent);
-            margin-bottom: 1rem;
-        }
-
-        .info-card p {
-            color: #b8b8d4;
-            line-height: 1.6;
-        }
-
-        body.light-mode .info-card p {
-            color: #6c757d;
-        }
-
-        .equation-box {
-            background: rgba(26, 10, 46, 0.8);
-            border: 1px solid rgba(138, 43, 226, 0.5);
-            border-radius: 15px;
-            padding: 2rem;
-            margin: 2rem 0;
-            text-align: center;
-        }
-
-        body.light-mode .equation-box {
-            background: rgba(248, 249, 250, 0.9);
-        }
-
-        .equation {
-            font-size: 1.5rem;
-            color: var(--accent);
-            margin: 1rem 0;
-            font-family: 'Courier New', monospace;
-        }
-
-        .equation-explanation {
-            color: #b8b8d4;
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-
-        body.light-mode .equation-explanation {
-            color: #6c757d;
-        }
-
-        .btn {
-            padding: 1rem 2rem;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: var(--light);
-            border: none;
-            border-radius: 50px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px var(--glow);
-        }
+        .hamburger { display: none; flex-direction: column; gap: 4px; cursor: pointer; }
+        .hamburger span { width: 25px; height: 3px; background: var(--text-primary); border-radius: 2px; transition: all 0.3s; }
 
         @media (max-width: 768px) {
-            nav {
-                padding: 1rem 1.5rem;
-            }
-            
             .nav-links {
-                display: none;
+                position: fixed; top: 80px; left: -100%; width: 100%; height: calc(100vh - 80px);
+                background: rgba(10, 14, 39, 0.98); backdrop-filter: blur(20px);
+                flex-direction: column; justify-content: center; align-items: center; transition: left 0.3s;
             }
-            
-            .section {
-                padding: 2rem 1.5rem;
-            }
-            
-            .grid-2 {
-                grid-template-columns: 1fr;
-            }
+            .nav-links.active { left: 0; }
+            .hamburger { display: flex; }
+            .lab-container { padding: 2rem; }
+            .sim-controls { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <canvas id="blackhole-canvas"></canvas>
+    <div class="stars-bg" id="stars"></div>
 
-    <nav>
-        <div class="nav-brand">🌌 CosmicLab</div>
-        <div class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="blackholes.html">Black Holes</a>
-            <a href="quantum.html">Quantum</a>
-            <a href="universe.html">Universe</a>
-        </div>
-        <button class="icon-btn" onclick="toggleTheme()">🌓</button>
+    <nav id="navbar">
+        <a href="index.html" class="logo"><i class="fas fa-atom"></i> CosmicLab</a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#simulation">Lab</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
     </nav>
 
+    <header>
+        <div class="subtitle">Exploring the Abyss</div>
+        <h1>BLACK HOLES</h1>
+        <p class="intro">Regions of spacetime where gravity is so intense that nothing can escape.</p>
+    </header>
+
     <div class="container">
-        <h1>🕳️ Black Hole Physics</h1>
-        
-        <div class="intro">
-            Black holes are the universe's most extreme objects—regions where gravity is so intense that nothing, not even light, can escape once it crosses the event horizon.
-        </div>
-
-        <div class="section">
-            <h2>What is a Black Hole?</h2>
-            <p>A black hole forms when a massive star collapses under its own gravity, compressing all its mass into an infinitesimally small point called a singularity. The boundary around this singularity is the event horizon—the point of no return.</p>
+        <section id="simulation">
+            <h2 class="section-title">Advanced Physics <span class="gradient-text">Laboratory</span></h2>
             
-            <div class="grid-2">
-                <div class="info-card">
-                    <h3>⚫ The Event Horizon</h3>
-                    <p>The invisible boundary where escape velocity equals the speed of light. Cross it, and there's no coming back.</p>
+            <div class="lab-container">
+                <div class="lab-tabs">
+                    <div class="lab-tab active" data-tab="schwarzschild"><i class="fas fa-circle"></i> Schwarzschild Radius</div>
+                    <div class="lab-tab" data-tab="orbits"><i class="fas fa-satellite"></i> Orbital Mechanics</div>
+                    <div class="lab-tab" data-tab="tidal"><i class="fas fa-arrows-alt-v"></i> Tidal Forces</div>
+                    <div class="lab-tab" data-tab="photon"><i class="fas fa-lightbulb"></i> Light Bending</div>
                 </div>
-                <div class="info-card">
-                    <h3>🎯 The Singularity</h3>
-                    <p>The infinitely dense core where our understanding of physics breaks down completely.</p>
-                </div>
-                <div class="info-card">
-                    <h3>💿 Accretion Disk</h3>
-                    <p>Matter spiraling into the black hole heats up to millions of degrees, emitting brilliant X-rays.</p>
-                </div>
-                <div class="info-card">
-                    <h3>💫 Hawking Radiation</h3>
-                    <p>Quantum effects near the horizon theoretically cause black holes to slowly evaporate.</p>
-                </div>
-            </div>
-        </div>
 
-        <div class="section">
-            <h2>The Mathematics of Black Holes</h2>
-            
-            <div class="equation-box">
-                <h3 style="color: var(--accent);">Schwarzschild Radius</h3>
-                <div class="equation">
-                    r<sub>s</sub> = 2GM / c²
-                </div>
-                <p class="equation-explanation">
-                    Where G is the gravitational constant, M is the mass, and c is the speed of light. This formula tells us the size of the event horizon.
-                </p>
-            </div>
-
-            <div class="equation-box">
-                <h3 style="color: var(--accent);">Time Dilation</h3>
-                <div class="equation">
-                    t = t<sub>0</sub> / √(1 - r<sub>s</sub>/r)
-                </div>
-                <p class="equation-explanation">
-                    Time slows down as you approach the event horizon. An observer far away would see you freeze as you reach it.
-                </p>
-            </div>
-        </div>
-
-        <div class="section">
-            <h2>Interactive Black Hole Simulator</h2>
-            <div class="interactive-demo">
-                <p style="color: #b8b8d4; margin-bottom: 1rem;">Adjust the parameters to see how black hole properties change:</p>
-                
-                <div class="controls">
-                    <div class="control-group">
-                        <label>Black Hole Mass (Solar Masses)</label>
-                        <input type="range" min="1" max="100" value="10" id="massSlider">
-                        <div class="value-display">Mass: <span id="massValue">10</span> M☉</div>
+                <!-- Tab 1: Schwarzschild -->
+                <div class="lab-content active" id="schwarzschild">
+                    <div class="sim-header">
+                        <h3>Schwarzschild Radius Calculator</h3>
+                        <p>Calculate the event horizon for different masses.</p>
                     </div>
-                    <div class="control-group">
-                        <label>Viewer Distance (km)</label>
-                        <input type="range" min="50" max="500" value="200" id="distanceSlider">
-                        <div class="value-display">Distance: <span id="distanceValue">200</span> km</div>
+                    <div class="sim-screen"><canvas id="canvas1"></canvas>
+                        <div class="sim-overlay">
+                            <div class="overlay-item"><span class="overlay-label">Radius:</span><span class="overlay-value" id="radius1">59 km</span></div>
+                            <div class="overlay-item"><span class="overlay-label">Density:</span><span class="overlay-value" id="density1">1.8×10¹⁶ kg/m³</span></div>
+                        </div>
+                    </div>
+                    <div class="sim-controls">
+                        <div class="control-group">
+                            <label>Black Hole Mass <span class="control-value" id="mass1">10 M☉</span></label>
+                            <input type="range" id="massSlider1" min="1" max="100" value="10">
+                        </div>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric-card"><div class="metric-label">Event Horizon</div><div class="metric-value" id="metric1">59 km</div></div>
+                        <div class="metric-card"><div class="metric-label">Escape Velocity</div><div class="metric-value">c</div></div>
                     </div>
                 </div>
 
-                <canvas id="simulator" class="demo-canvas"></canvas>
-
-                <div class="grid-2" style="margin-top: 1.5rem;">
-                    <div style="color: #b8b8d4;">
-                        <strong style="color: var(--accent);">Event Horizon Radius:</strong><br>
-                        <span id="radiusDisplay">29.5 km</span>
+                <!-- Tab 2: Orbits -->
+                <div class="lab-content" id="orbits">
+                    <div class="sim-header">
+                        <h3>Orbital Mechanics Simulator</h3>
+                        <p>Watch particles orbit and fall into the black hole.</p>
                     </div>
-                    <div style="color: #b8b8d4;">
-                        <strong style="color: var(--accent);">Time Dilation Factor:</strong><br>
-                        <span id="timeDilationDisplay">1.00x</span>
+                    <div class="sim-screen"><canvas id="canvas2"></canvas></div>
+                    <div class="sim-controls">
+                        <div class="control-group">
+                            <label>Orbital Radius <span class="control-value" id="orbit-radius">200 km</span></label>
+                            <input type="range" id="orbitSlider" min="50" max="500" value="200">
+                        </div>
+                        <div class="control-group">
+                            <label>Particle Count <span class="control-value" id="particle-count">20</span></label>
+                            <input type="range" id="particleSlider" min="5" max="50" value="20">
+                        </div>
+                    </div>
+                    <div class="sim-actions">
+                        <button class="sim-btn" onclick="startOrbit()"><i class="fas fa-play"></i> Start Simulation</button>
+                        <button class="sim-btn secondary" onclick="resetOrbit()"><i class="fas fa-redo"></i> Reset</button>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Tidal Forces -->
+                <div class="lab-content" id="tidal">
+                    <div class="sim-header">
+                        <h3>Tidal Forces & Spaghettification</h3>
+                        <p>See how objects stretch as they approach the event horizon.</p>
+                    </div>
+                    <div class="sim-screen"><canvas id="canvas3"></canvas></div>
+                    <div class="sim-controls">
+                        <div class="control-group">
+                            <label>Distance <span class="control-value" id="distance-val">100 km</span></label>
+                            <input type="range" id="distanceSlider" min="30" max="300" value="100">
+                        </div>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric-card"><div class="metric-label">Tidal Force</div><div class="metric-value" id="tidal-force">High</div></div>
+                        <div class="metric-card"><div class="metric-label">Stretch Factor</div><div class="metric-value" id="stretch">2.5x</div></div>
+                    </div>
+                </div>
+
+                <!-- Tab 4: Photon Sphere -->
+                <div class="lab-content" id="photon">
+                    <div class="sim-header">
+                        <h3>Gravitational Lensing & Light Bending</h3>
+                        <p>Watch light rays bend around the black hole.</p>
+                    </div>
+                    <div class="sim-screen"><canvas id="canvas4"></canvas></div>
+                    <div class="sim-controls">
+                        <div class="control-group">
+                            <label>Impact Parameter <span class="control-value" id="impact-val">150 km</span></label>
+                            <input type="range" id="impactSlider" min="50" max="300" value="150">
+                        </div>
+                    </div>
+                    <div class="sim-actions">
+                        <button class="sim-btn" onclick="shootPhoton()"><i class="fas fa-bolt"></i> Fire Photon</button>
+                        <button class="sim-btn secondary" onclick="clearPhotons()"><i class="fas fa-trash"></i> Clear</button>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="section">
-            <h2>Types of Black Holes</h2>
-            <div class="grid-2">
-                <div class="info-card">
-                    <h3>🌟 Stellar Black Holes</h3>
-                    <p><strong>Mass:</strong> 3-100 solar masses<br>
-                    <strong>Formation:</strong> Collapse of massive stars<br>
-                    <strong>Size:</strong> Event horizon ~3-300 km</p>
-                </div>
-                <div class="info-card">
-                    <h3>🌌 Supermassive Black Holes</h3>
-                    <p><strong>Mass:</strong> Millions to billions of solar masses<br>
-                    <strong>Location:</strong> Centers of galaxies<br>
-                    <strong>Size:</strong> Can be larger than our solar system</p>
-                </div>
-                <div class="info-card">
-                    <h3>⭐ Intermediate Black Holes</h3>
-                    <p><strong>Mass:</strong> 100-100,000 solar masses<br>
-                    <strong>Formation:</strong> Still mysterious<br>
-                    <strong>Rarity:</strong> Very few confirmed</p>
-                </div>
-                <div class="info-card">
-                    <h3>🔬 Primordial Black Holes</h3>
-                    <p><strong>Mass:</strong> Varies widely<br>
-                    <strong>Formation:</strong> Early universe density fluctuations<br>
-                    <strong>Status:</strong> Theoretical (not yet detected)</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="section">
-            <h2>Journey to a Black Hole</h2>
-            <p>Imagine you're falling into a stellar-mass black hole. Here's what you'd experience:</p>
-            
-            <div style="margin-top: 2rem; line-height: 2;">
-                <p><strong style="color: var(--accent);">Far Away (1000 km):</strong> The black hole appears as a dark sphere, surrounded by a brilliant accretion disk.</p>
-                
-                <p><strong style="color: var(--accent);">Approaching (100 km):</strong> Tidal forces begin to stretch you—your feet feel stronger gravity than your head.</p>
-                
-                <p><strong style="color: var(--accent);">Near Horizon (10 km):</strong> Time dilation becomes extreme. The universe seems to speed up around you.</p>
-                
-                <p><strong style="color: var(--accent);">At Horizon:</strong> To outside observers, you appear frozen. But you feel nothing special as you cross.</p>
-                
-                <p><strong style="color: var(--accent);">Inside:</strong> All paths lead to the singularity. Space and time have swapped roles—you move through time toward the center.</p>
-            </div>
-        </div>
+        </section>
     </div>
 
+    <footer><p>© 2025 CosmicLab - Advanced Physics Education</p></footer>
+
     <script>
-        function toggleTheme() {
-            document.body.classList.toggle('light-mode');
+        // Generate stars
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 200; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            starsContainer.appendChild(star);
         }
 
-        // Black hole background animation
-        const canvas = document.getElementById('blackhole-canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        // Navigation
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+        hamburger.addEventListener('click', () => navLinks.classList.toggle('active'));
 
-        const particles = [];
-        for (let i = 0; i < 100; i++) {
-            particles.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                size: Math.random() * 2,
-                speedX: (Math.random() - 0.5) * 0.5,
-                speedY: (Math.random() - 0.5) * 0.5
+        // Tab switching
+        document.querySelectorAll('.lab-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.lab-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.lab-content').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                document.getElementById(this.dataset.tab).classList.add('active');
+                initCurrentTab(this.dataset.tab);
             });
+        });
+
+        // Canvas setup
+        const canvas1 = document.getElementById('canvas1');
+        const ctx1 = canvas1.getContext('2d');
+        const canvas2 = document.getElementById('canvas2');
+        const ctx2 = canvas2.getContext('2d');
+        const canvas3 = document.getElementById('canvas3');
+        const ctx3 = canvas3.getContext('2d');
+        const canvas4 = document.getElementById('canvas4');
+        const ctx4 = canvas4.getContext('2d');
+
+        function resizeCanvas(canvas) {
+            canvas.width = canvas.parentElement.offsetWidth;
+            canvas.height = 500;
         }
+        [canvas1, canvas2, canvas3, canvas4].forEach(resizeCanvas);
 
-        function animateBackground() {
-            ctx.fillStyle = 'rgba(10, 10, 26, 0.1)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-
-            particles.forEach(p => {
-                const dx = centerX - p.x;
-                const dy = centerY - p.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                
-                if (dist < 200) {
-                    p.speedX += dx * 0.00005;
-                    p.speedY += dy * 0.00005;
-                }
-
-                p.x += p.speedX;
-                p.y += p.speedY;
-
-                if (dist < 50) {
-                    p.x = Math.random() * canvas.width;
-                    p.y = Math.random() * canvas.height;
-                    p.speedX = (Math.random() - 0.5) * 0.5;
-                    p.speedY = (Math.random() - 0.5) * 0.5;
-                }
-
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(138, 43, 226, 0.8)';
-                ctx.fill();
-            });
-
-            const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 150);
-            gradient.addColorStop(0, 'rgba(0, 0, 0, 1)');
-            gradient.addColorStop(0.5, 'rgba(138, 43, 226, 0.3)');
-            gradient.addColorStop(1, 'rgba(138, 43, 226, 0)');
+        // Tab 1: Schwarzschild
+        const massSlider1 = document.getElementById('massSlider1');
+        function updateSchwarzsChild() {
+            const mass = massSlider1.value;
+            document.getElementById('mass1').textContent = mass + ' M☉';
+            const radius = (2.95 * mass * 2).toFixed(0);
+            document.getElementById('radius1').textContent = radius + ' km';
+            document.getElementById('metric1').textContent = radius + ' km';
+            const density = (1.8e16 / (mass * mass)).toExponential(1);
+            document.getElementById('density1').textContent = density + ' kg/m³';
             
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            requestAnimationFrame(animateBackground);
+            const cx = canvas1.width / 2, cy = canvas1.height / 2;
+            const r = 20 + Math.log(mass) * 30;
+            ctx1.clearRect(0, 0, canvas1.width, canvas1.height);
+            
+            const grad = ctx1.createRadialGradient(cx, cy, 0, cx, cy, r * 4);
+            grad.addColorStop(0, '#F59E0B');
+            grad.addColorStop(0.6, '#8B5CF6');
+            grad.addColorStop(1, 'transparent');
+            ctx1.fillStyle = grad;
+            ctx1.fillRect(0, 0, canvas1.width, canvas1.height);
+            
+            ctx1.fillStyle = '#000';
+            ctx1.beginPath();
+            ctx1.arc(cx, cy, r, 0, Math.PI * 2);
+            ctx1.fill();
+            
+            ctx1.strokeStyle = '#3B82F6';
+            ctx1.lineWidth = 3;
+            ctx1.shadowBlur = 20;
+            ctx1.shadowColor = '#3B82F6';
+            ctx1.beginPath();
+            ctx1.arc(cx, cy, r, 0, Math.PI * 2);
+            ctx1.stroke();
+            ctx1.shadowBlur = 0;
         }
+        massSlider1.addEventListener('input', updateSchwarzsChild);
+        updateSchwarzsChild();
 
-        // Simulator
-        const simCanvas = document.getElementById('simulator');
-        const simCtx = simCanvas.getContext('2d');
-        simCanvas.width = simCanvas.offsetWidth;
-        simCanvas.height = 400;
-
-        const massSlider = document.getElementById('massSlider');
-        const distanceSlider = document.getElementById('distanceSlider');
-
-        function updateSimulator() {
-            const mass = parseFloat(massSlider.value);
-            const distance = parseFloat(distanceSlider.value);
-            
-            const schwarzschildRadius = 2.95 * mass; // in km
-            const timeDilation = 1 / Math.sqrt(1 - schwarzschildRadius / distance);
-            
-            document.getElementById('massValue').textContent = mass;
-            document.getElementById('distanceValue').textContent = distance;
-            document.getElementById('radiusDisplay').textContent = schwarzschildRadius.toFixed(2) + ' km';
-            document.getElementById('timeDilationDisplay').textContent = timeDilation.toFixed(2) + 'x';
-            
-            drawBlackHole(mass, distance, schwarzschildRadius);
-        }
-
-        function drawBlackHole(mass, distance, radius) {
-            simCtx.fillStyle = '#000';
-            simCtx.fillRect(0, 0, simCanvas.width, simCanvas.height);
-            
-            const centerX = simCanvas.width / 2;
-            const centerY = simCanvas.height / 2;
-            const scale = 1.5;
-            const bhRadius = radius * scale;
-            
-            const gradient = simCtx.createRadialGradient(centerX, centerY, 0, centerX, centerY, bhRadius * 3);
-            gradient.addColorStop(0, 'rgba(0, 0, 0, 1)');
-            gradient.addColorStop(0.3, 'rgba(138, 43, 226, 0.6)');
-            gradient.addColorStop(0.6, 'rgba(240, 147, 251, 0.3)');
-            gradient.addColorStop(1, 'rgba(240, 147, 251, 0)');
-            
-            simCtx.fillStyle = gradient;
-            simCtx.beginPath();
-            simCtx.arc(centerX, centerY, bhRadius * 3, 0, Math.PI * 2);
-            simCtx.fill();
-            
-            simCtx.fillStyle = '#000';
-            simCtx.beginPath();
-            simCtx.arc(centerX, centerY, bhRadius, 0, Math.PI * 2);
-            simCtx.fill();
-            
-            simCtx.strokeStyle = 'rgba(138, 43, 226, 0.8)';
-            simCtx.lineWidth = 2;
-            simCtx.beginPath();
-            simCtx.arc(centerX, centerY, bhRadius, 0, Math.PI * 2);
-            simCtx.stroke();
-            
-            for (let i = 0; i < 50; i++) {
-                const angle = (i / 50) * Math.PI * 2;
-                const dist = bhRadius * 2 + Math.random() * 50;
-                const x = centerX + Math.cos(angle) * dist;
-                const y = centerY + Math.sin(angle) * dist;
-                
-                simCtx.fillStyle = 'rgba(240, 147, 251, 0.6)';
-                simCtx.beginPath();
-                simCtx.arc(x, y, 2, 0, Math.PI * 2);
-                simCtx.fill();
+        // Tab 2: Orbits
+        let particles = [];
+        let orbitRunning = false;
+        function startOrbit() {
+            orbitRunning = true;
+            const count = parseInt(document.getElementById('particleSlider').value);
+            particles = [];
+            for (let i = 0; i < count; i++) {
+                const angle = (i / count) * Math.PI * 2;
+                const radius = parseFloat(document.getElementById('orbitSlider').value);
+                particles.push({
+                    x: canvas2.width / 2 + Math.cos(angle) * radius,
+                    y: canvas2.height / 2 + Math.sin(angle) * radius,
+                    vx: -Math.sin(angle) * 2,
+                    vy: Math.cos(angle) * 2,
+                    trail: []
+                });
             }
+            animateOrbit();
         }
-
-        massSlider.addEventListener('input', updateSimulator);
-        distanceSlider.addEventListener('input', updateSimulator);
-
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+        function resetOrbit() {
+            orbitRunning = false;
+            particles = [];
+            ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
+        }
+        function animateOrbit() {
+            if (!orbitRunning) return;
+            ctx2.fillStyle = 'rgba(0,0,0,0.1)';
+            ctx2.fillRect(0, 0, canvas2.width, canvas2.height);
+            
+            const cx = canvas2.width / 2, cy = canvas2.height / 2;
+            ctx2.fillStyle = '#000';
+            ctx2.beginPath();
+            ctx2.arc(cx, cy, 40, 0, Math.PI * 2);
+            ctx2.fill();
+            
+            particles.forEach(p => {
+                const dx = cx - p.x, dy = cy - p.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                const force = 5000 / (dist * dist);
+                p.vx += (dx / dist) * force;
+                p.vy += (dy / dist) * force;
+                p.x += p.vx;
+                p.y += p.vy;
+                
+                ctx2.fillStyle = '#06B6D4';
+                ctx2.beginPath();
+                ctx2.arc(p.x, p.y, 3, 0, Math.PI * 2);
+                ctx2.fill();
+            });
+            requestAnimationFrame(animateOrbit);
+        }
+        document.getElementById('orbitSlider').addEventListener('input', e => {
+            document.getElementById('orbit-radius').textContent = e.target.value + ' km';
+        });
+        document.getElementById('particleSlider').addEventListener('input', e => {
+            document.getElementById('particle-count').textContent = e.target.value;
         });
 
-        window.addEventListener('load', () => {
-            animateBackground();
-            updateSimulator();
+        // Tab 3: Tidal Forces
+        function updateTidal() {
+            const dist = document.getElementById('distanceSlider').value;
+            document.getElementById('distance-val').textContent = dist + ' km';
+            const force = dist < 100 ? 'Extreme' : dist < 200 ? 'High' : 'Moderate';
+            const stretch = (300 / dist).toFixed(1);
+            document.getElementById('tidal-force').textContent = force;
+            document.getElementById('stretch').textContent = stretch + 'x';
+            
+            const cx = canvas3.width / 2, cy = canvas3.height / 2;
+            ctx3.clearRect(0, 0, canvas3.width, canvas3.height);
+            
+            ctx3.fillStyle = '#000';
+            ctx3.beginPath();
+            ctx3.arc(cx, cy, 50, 0, Math.PI * 2);
+            ctx3.fill();
+            
+            const objDist = parseFloat(dist) + 50;
+            const stretchFactor = parseFloat(stretch);
+            ctx3.fillStyle = '#F59E0B';
+            ctx3.fillRect(cx + objDist, cy - 10 / stretchFactor, 30, 20 * stretchFactor);
+        }
+        document.getElementById('distanceSlider').addEventListener('input', updateTidal);
+        updateTidal();
+
+        // Tab 4: Photon
+        let photons = [];
+        function shootPhoton() {
+            const impact = parseFloat(document.getElementById('impactSlider').value);
+            photons.push({
+                x: 0,
+                y: canvas4.height / 2 + impact - 150,
+                vx: 5,
+                vy: 0,
+                trail: []
+            });
+        }
+        function clearPhotons() {
+            photons = [];
+            ctx4.clearRect(0, 0, canvas4.width, canvas4.height);
+        }
+        function animatePhotons() {
+            ctx4.fillStyle = 'rgba(0,0,0,0.05)';
+            ctx4.fillRect(0, 0, canvas4.width, canvas4.height);
+            
+            const cx = canvas4.width / 2, cy = canvas4.height / 2;
+            ctx4.fillStyle = '#000';
+            ctx4.beginPath();
+            ctx4.arc(cx, cy, 50, 0, Math.PI * 2);
+            ctx4.fill();
+            
+            photons.forEach((p, i) => {
+                const dx = cx - p.x, dy = cy - p.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 50) {
+                    photons.splice(i, 1);
+                    return;
+                }
+                const bend = 8000 / (dist * dist);
+                const angle = Math.atan2(dy, dx);
+                p.vx += Math.cos(angle) * bend;
+                p.vy += Math.sin(angle) * bend;
+                p.x += p.vx;
+                p.y += p.vy;
+                
+                ctx4.strokeStyle = '#06B6D4';
+                ctx4.lineWidth = 2;
+                ctx4.shadowBlur = 10;
+                ctx4.shadowColor = '#06B6D4';
+                ctx4.beginPath();
+                ctx4.moveTo(p.x - p.vx, p.y - p.vy);
+                ctx4.lineTo(p.x, p.y);
+                ctx4.stroke();
+                ctx4.shadowBlur = 0;
+            });
+            requestAnimationFrame(animatePhotons);
+        }
+        document.getElementById('impactSlider').addEventListener('input', e => {
+            document.getElementById('impact-val').textContent = e.target.value + ' km';
         });
+        animatePhotons();
+
+        function initCurrentTab(tab) {
+            if (tab === 'schwarzschild') updateSchwarzsChild();
+            if (tab === 'tidal') updateTidal();
+        }
     </script>
 </body>
 </html>

@@ -3,699 +3,614 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quantum Mechanics - CosmicLab</title>
+    <title>Quantum Mechanics | CosmicLab - Advanced Laboratory</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         :root {
-            --primary: #667eea;
-            --secondary: #764ba2;
-            --accent: #f093fb;
-            --quantum-blue: #00d4ff;
-            --quantum-purple: #b537f2;
-            --dark: #0a0a1a;
-            --light: #fff;
+            --bg-primary: #0A0E27;
+            --bg-secondary: #151933;
+            --accent-blue: #3B82F6;
+            --accent-purple: #8B5CF6;
+            --accent-cyan: #06B6D4;
+            --accent-pink: #EC4899;
+            --text-primary: #F8FAFC;
+            --text-secondary: #94A3B8;
+            --border: rgba(148, 163, 184, 0.1);
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #0a0a1a 0%, #1a0f2e 50%, #0f0a1e 100%);
-            color: var(--light);
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             overflow-x: hidden;
-        }
-
-        body.light-mode {
-            background: linear-gradient(135deg, #f0f4ff 0%, #e8f0ff 100%);
-            color: #1a1a2e;
-        }
-
-        #quantum-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-        }
-
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            padding: 1rem 3rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(10, 10, 26, 0.85);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(0, 212, 255, 0.3);
-            z-index: 1000;
-        }
-
-        body.light-mode nav {
-            background: rgba(255, 255, 255, 0.85);
-        }
-
-        .nav-brand {
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #00d4ff 0%, #b537f2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-        }
-
-        nav a {
-            color: var(--light);
-            text-decoration: none;
-            font-weight: 500;
-            padding: 0.5rem 1.5rem;
-            border-radius: 25px;
-            transition: all 0.3s ease;
-        }
-
-        body.light-mode nav a {
-            color: #1a1a2e;
-        }
-
-        nav a:hover {
-            background: rgba(0, 212, 255, 0.2);
-        }
-
-        .icon-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(0, 212, 255, 0.2);
-            border: none;
-            color: var(--light);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        body.light-mode .icon-btn {
-            color: #1a1a2e;
-        }
-
-        .icon-btn:hover {
-            background: rgba(0, 212, 255, 0.4);
-            transform: scale(1.1);
-        }
-
-        .container {
-            position: relative;
-            z-index: 1;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 8rem 2rem 4rem;
-        }
-
-        h1 {
-            font-size: clamp(2.5rem, 6vw, 4.5rem);
-            text-align: center;
-            background: linear-gradient(135deg, #00d4ff 0%, #b537f2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 2rem;
-        }
-
-        .intro {
-            text-align: center;
-            max-width: 800px;
-            margin: 0 auto 4rem;
-            font-size: 1.2rem;
-            color: #b8b8d4;
-            line-height: 1.8;
-        }
-
-        body.light-mode .intro {
-            color: #6c757d;
-        }
-
-        .section {
-            background: rgba(26, 10, 46, 0.6);
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            border-radius: 20px;
-            padding: 3rem;
-            margin-bottom: 3rem;
-            backdrop-filter: blur(10px);
-        }
-
-        body.light-mode .section {
-            background: rgba(255, 255, 255, 0.8);
-        }
-
-        .section h2 {
-            color: var(--quantum-blue);
-            margin-bottom: 1.5rem;
-            font-size: 2rem;
-        }
-
-        .section p {
-            color: #b8b8d4;
-            line-height: 1.8;
-            margin-bottom: 1rem;
-        }
-
-        body.light-mode .section p {
-            color: #6c757d;
-        }
-
-        .quantum-principle {
-            background: rgba(0, 212, 255, 0.1);
-            border-left: 4px solid var(--quantum-blue);
-            padding: 1.5rem;
-            margin: 2rem 0;
-            border-radius: 10px;
-        }
-
-        body.light-mode .quantum-principle {
-            background: rgba(0, 212, 255, 0.05);
-        }
-
-        .quantum-principle h3 {
-            color: var(--quantum-blue);
-            margin-bottom: 0.5rem;
-        }
-
-        .interactive-demo {
-            background: rgba(10, 10, 26, 0.8);
-            border: 2px solid rgba(0, 212, 255, 0.5);
-            border-radius: 20px;
-            padding: 2rem;
-            margin: 2rem 0;
-        }
-
-        body.light-mode .interactive-demo {
-            background: rgba(248, 249, 250, 0.9);
-        }
-
-        .demo-canvas {
-            width: 100%;
-            height: 400px;
-            background: #000;
-            border-radius: 15px;
-            margin: 1rem 0;
-        }
-
-        .experiment-buttons {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin: 2rem 0;
-        }
-
-        .experiment-btn {
-            padding: 1.5rem;
-            background: rgba(0, 212, 255, 0.1);
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            border-radius: 15px;
-            color: var(--light);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-
-        body.light-mode .experiment-btn {
-            color: #1a1a2e;
-        }
-
-        .experiment-btn:hover {
-            background: rgba(0, 212, 255, 0.2);
-            border-color: var(--quantum-blue);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
-        }
-
-        .experiment-btn.active {
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(181, 55, 242, 0.3));
-            border-color: var(--quantum-blue);
-        }
-
-        .grid-2 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin: 2rem 0;
-        }
-
-        .info-card {
-            background: rgba(10, 10, 26, 0.8);
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            border-radius: 15px;
-            padding: 2rem;
-            transition: all 0.3s ease;
-        }
-
-        body.light-mode .info-card {
-            background: rgba(248, 249, 250, 0.9);
-        }
-
-        .info-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--quantum-blue);
-            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
-        }
-
-        .info-card h3 {
-            color: var(--quantum-blue);
-            margin-bottom: 1rem;
-        }
-
-        .info-card p {
-            color: #b8b8d4;
             line-height: 1.6;
         }
 
-        body.light-mode .info-card p {
-            color: #6c757d;
+        .stars-bg { position: fixed; width: 100%; height: 100%; top: 0; left: 0; z-index: 0; }
+        .star { position: absolute; width: 2px; height: 2px; background: white; border-radius: 50%; animation: twinkle 3s infinite; }
+        @keyframes twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+        nav {
+            position: fixed; top: 0; width: 100%; padding: 1.5rem 5%;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(10, 14, 39, 0.8); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border); z-index: 1000; transition: all 0.3s;
         }
 
-        .measurement-box {
-            background: rgba(181, 55, 242, 0.1);
-            border: 2px dashed var(--quantum-purple);
-            border-radius: 15px;
-            padding: 2rem;
-            margin: 2rem 0;
-            text-align: center;
+        .logo {
+            font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            display: flex; align-items: center; gap: 0.5rem; text-decoration: none;
         }
 
-        body.light-mode .measurement-box {
-            background: rgba(181, 55, 242, 0.05);
+        .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-weight: 500; font-size: 0.95rem; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--text-primary); }
+
+        header {
+            min-height: 70vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
+            padding: 10rem 5% 4rem; position: relative; z-index: 1;
         }
 
-        .measurement-result {
-            font-size: 2rem;
-            color: var(--quantum-purple);
-            margin: 1rem 0;
-            font-weight: bold;
+        h1 {
+            font-family: 'Space Grotesk', sans-serif; font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 800; line-height: 1.1; margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--text-primary), var(--accent-purple));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
 
-        .btn {
-            padding: 1rem 2rem;
-            background: linear-gradient(135deg, var(--quantum-blue), var(--quantum-purple));
-            color: var(--light);
-            border: none;
-            border-radius: 50px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .subtitle { font-size: 1.2rem; color: var(--accent-cyan); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 1rem; font-weight: 600; }
+        .intro { max-width: 800px; margin: 0 auto 2rem; font-size: 1.15rem; color: var(--text-secondary); line-height: 1.8; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 4rem 5%; position: relative; z-index: 1; }
+        .section-title { font-family: 'Space Grotesk', sans-serif; font-size: 2.5rem; margin-bottom: 3rem; font-weight: 700; }
+        .gradient-text { background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .principles-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 6rem;
         }
 
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.5);
+        .principle-card {
+            background: rgba(21, 25, 51, 0.6); backdrop-filter: blur(20px);
+            border: 1px solid var(--border); border-left: 4px solid var(--accent-cyan);
+            padding: 2.5rem; border-radius: 20px; transition: all 0.4s;
         }
+
+        .principle-card:hover {
+            transform: translateY(-10px); border-color: var(--accent-cyan);
+            box-shadow: 0 15px 50px rgba(6, 182, 212, 0.3);
+        }
+
+        .principle-icon { font-size: 2.5rem; margin-bottom: 1.5rem; display: block; }
+        .principle-card h3 { font-family: 'Space Grotesk', sans-serif; color: var(--accent-cyan); margin-bottom: 1rem; font-size: 1.4rem; font-weight: 600; }
+        .principle-card p { color: var(--text-secondary); line-height: 1.8; }
+
+        /* Lab Styles */
+        .lab-container {
+            background: rgba(21, 25, 51, 0.6); backdrop-filter: blur(20px);
+            border: 1px solid var(--border); border-radius: 24px; padding: 3rem; margin-bottom: 6rem;
+        }
+
+        .lab-tabs { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+        .lab-tab {
+            padding: 1rem 2rem; background: rgba(6, 182, 212, 0.1);
+            border: 1px solid rgba(6, 182, 212, 0.3); border-radius: 12px;
+            color: var(--text-secondary); cursor: pointer; transition: all 0.3s;
+            font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 0.5rem;
+        }
+        .lab-tab:hover { background: rgba(6, 182, 212, 0.2); color: var(--text-primary); }
+        .lab-tab.active {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            color: white; border-color: transparent; box-shadow: 0 4px 15px rgba(6, 182, 212, 0.4);
+        }
+
+        .lab-content { display: none; }
+        .lab-content.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .sim-header { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+        .sim-header h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; margin-bottom: 0.75rem; color: var(--accent-cyan); }
+        .sim-header p { color: var(--text-secondary); line-height: 1.7; }
+
+        .sim-screen {
+            background: #000; height: 500px; border-radius: 16px;
+            position: relative; overflow: hidden; margin-bottom: 2rem; border: 1px solid var(--border);
+        }
+
+        .sim-overlay {
+            position: absolute; top: 15px; right: 15px;
+            background: rgba(10, 14, 39, 0.9); backdrop-filter: blur(10px);
+            padding: 1rem; border-radius: 12px; border: 1px solid rgba(6, 182, 212, 0.3); z-index: 10;
+        }
+
+        .overlay-item { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; font-size: 0.9rem; }
+        .overlay-item:last-child { margin-bottom: 0; }
+        .overlay-label { color: var(--text-secondary); }
+        .overlay-value { color: var(--accent-cyan); font-weight: 600; font-family: 'Space Grotesk', sans-serif; }
+
+        .sim-controls {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem; padding: 2rem; background: rgba(10, 14, 39, 0.6); border-radius: 16px; margin-bottom: 2rem;
+        }
+
+        .control-group { display: flex; flex-direction: column; }
+        .control-group label {
+            display: flex; justify-content: space-between; align-items: center;
+            color: var(--text-primary); font-weight: 600; margin-bottom: 0.75rem; font-size: 0.95rem;
+        }
+        .control-value { color: var(--accent-cyan); font-family: 'Space Grotesk', sans-serif; }
+
+        input[type=range] {
+            width: 100%; height: 8px; background: rgba(6, 182, 212, 0.2);
+            border-radius: 5px; outline: none; -webkit-appearance: none;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            cursor: pointer; box-shadow: 0 2px 10px rgba(6, 182, 212, 0.5);
+        }
+
+        .sim-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem; }
+        .sim-btn {
+            padding: 0.875rem 1.75rem; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            border: none; border-radius: 12px; color: white; font-weight: 600;
+            cursor: pointer; transition: all 0.3s; font-size: 0.95rem;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .sim-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5); }
+        .sim-btn.secondary {
+            background: rgba(6, 182, 212, 0.1); border: 2px solid rgba(6, 182, 212, 0.3); color: var(--accent-cyan);
+        }
+
+        .metrics-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 2rem;
+        }
+        .metric-card {
+            background: rgba(6, 182, 212, 0.1); border: 1px solid rgba(6, 182, 212, 0.3);
+            padding: 1.5rem; border-radius: 12px; text-align: center;
+        }
+        .metric-label {
+            color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.5rem;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .metric-value {
+            font-size: 1.75rem; color: var(--accent-cyan);
+            font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+        }
+
+        .info-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin: 3rem 0;
+        }
+
+        .info-card {
+            background: rgba(21, 25, 51, 0.6); backdrop-filter: blur(20px);
+            border: 1px solid var(--border); border-radius: 20px; padding: 2.5rem; transition: all 0.4s;
+        }
+
+        .info-card:hover {
+            transform: translateY(-10px); border-color: var(--accent-cyan);
+            box-shadow: 0 15px 50px rgba(6, 182, 212, 0.3);
+        }
+
+        .info-card h3 { font-family: 'Space Grotesk', sans-serif; color: var(--accent-cyan); margin-bottom: 1rem; font-size: 1.4rem; font-weight: 600; }
+        .info-card .icon { font-size: 2.5rem; margin-bottom: 1.5rem; display: block; }
+        .info-card p { color: var(--text-secondary); line-height: 1.8; }
+
+        footer {
+            background: rgba(21, 25, 51, 0.8); padding: 3rem 5%;
+            border-top: 1px solid var(--border); text-align: center;
+            color: var(--text-secondary); position: relative; z-index: 1;
+        }
+
+        .hamburger { display: none; flex-direction: column; gap: 4px; cursor: pointer; }
+        .hamburger span { width: 25px; height: 3px; background: var(--text-primary); border-radius: 2px; }
 
         @media (max-width: 768px) {
-            nav {
-                padding: 1rem 1.5rem;
-            }
-            
             .nav-links {
-                display: none;
+                position: fixed; top: 80px; left: -100%; width: 100%; height: calc(100vh - 80px);
+                background: rgba(10, 14, 39, 0.98); backdrop-filter: blur(20px);
+                flex-direction: column; justify-content: center; align-items: center; transition: left 0.3s;
             }
-            
-            .section {
-                padding: 2rem 1.5rem;
-            }
+            .nav-links.active { left: 0; }
+            .hamburger { display: flex; }
+            .lab-container { padding: 2rem; }
+            .sim-controls { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <canvas id="quantum-canvas"></canvas>
+    <div class="stars-bg" id="stars"></div>
 
-    <nav>
-        <div class="nav-brand">⚛️ CosmicLab</div>
-        <div class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="blackholes.html">Black Holes</a>
-            <a href="quantum.html">Quantum</a>
-            <a href="universe.html">Universe</a>
-        </div>
-        <button class="icon-btn" onclick="toggleTheme()">🌓</button>
+    <nav id="navbar">
+        <a href="index.html" class="logo"><i class="fas fa-atom"></i> CosmicLab</a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="blackholes.html">Black Holes</a></li>
+            <li><a href="#simulation">Lab</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
     </nav>
 
+    <header>
+        <div class="subtitle">Exploring the Quantum Realm</div>
+        <h1>QUANTUM MECHANICS</h1>
+        <p class="intro">
+            Welcome to the bizarre world where particles exist in multiple states, observation changes reality, and nature plays dice at its fundamental level.
+        </p>
+    </header>
+
     <div class="container">
-        <h1>⚛️ Quantum Mechanics</h1>
-        
-        <div class="intro">
-            Welcome to the bizarre world of quantum mechanics, where particles exist in multiple states at once, observation changes reality, and nature plays dice at its fundamental level.
-        </div>
+        <section>
+            <h2 class="section-title">Fundamental <span class="gradient-text">Principles</span></h2>
+            <div class="principles-grid">
+                <div class="principle-card">
+                    <span class="principle-icon">🎲</span>
+                    <h3>Wave-Particle Duality</h3>
+                    <p>Everything has both wave and particle properties. Electrons behave as particles when detected, but travel as waves of probability.</p>
+                </div>
+                <div class="principle-card">
+                    <span class="principle-icon">👁️</span>
+                    <h3>Observer Effect</h3>
+                    <p>Measurement affects quantum systems. Before observation, particles exist in superposition—multiple states simultaneously.</p>
+                </div>
+                <div class="principle-card">
+                    <span class="principle-icon">🔗</span>
+                    <h3>Quantum Entanglement</h3>
+                    <p>Particles become "entangled," instantly affecting each other regardless of distance. Einstein called this "spooky action."</p>
+                </div>
+                <div class="principle-card">
+                    <span class="principle-icon">❓</span>
+                    <h3>Heisenberg Uncertainty</h3>
+                    <p>You cannot know both position and momentum simultaneously. The more precisely you know one, the less you know the other.</p>
+                </div>
+            </div>
+        </section>
 
-        <div class="section">
-            <h2>The Quantum Revolution</h2>
-            <p>Quantum mechanics describes the behavior of matter and energy at the atomic and subatomic scale. At this level, classical physics breaks down, and reality operates by entirely different rules.</p>
+        <section id="simulation">
+            <h2 class="section-title">Advanced Quantum <span class="gradient-text">Laboratory</span></h2>
             
-            <div class="quantum-principle">
-                <h3>🎲 Wave-Particle Duality</h3>
-                <p>Everything has both wave and particle properties. An electron can behave as a particle when detected, but travels as a wave of probability.</p>
-            </div>
-
-            <div class="quantum-principle">
-                <h3>👁️ The Observer Effect</h3>
-                <p>The act of measurement affects quantum systems. Before observation, particles exist in superposition—multiple states simultaneously.</p>
-            </div>
-
-            <div class="quantum-principle">
-                <h3>🔗 Quantum Entanglement</h3>
-                <p>Particles can become "entangled," instantly affecting each other regardless of distance. Einstein called this "spooky action at a distance."</p>
-            </div>
-
-            <div class="quantum-principle">
-                <h3>❓ Heisenberg Uncertainty</h3>
-                <p>You cannot know both a particle's exact position and momentum simultaneously. The more precisely you know one, the less you know the other.</p>
-            </div>
-        </div>
-
-        <div class="section">
-            <h2>Interactive Quantum Experiments</h2>
-            <div class="interactive-demo">
-                <p style="color: #b8b8d4; margin-bottom: 1rem;">Choose an experiment to explore quantum behavior:</p>
-                
-                <div class="experiment-buttons">
-                    <button class="experiment-btn active" onclick="runExperiment('double-slit')">
-                        <div style="font-size: 2rem;">〰️</div>
-                        Double-Slit<br>Experiment
-                    </button>
-                    <button class="experiment-btn" onclick="runExperiment('superposition')">
-                        <div style="font-size: 2rem;">🎭</div>
-                        Quantum<br>Superposition
-                    </button>
-                    <button class="experiment-btn" onclick="runExperiment('measurement')">
-                        <div style="font-size: 2rem;">📏</div>
-                        Wave Function<br>Collapse
-                    </button>
-                    <button class="experiment-btn" onclick="runExperiment('tunneling')">
-                        <div style="font-size: 2rem;">🚇</div>
-                        Quantum<br>Tunneling
-                    </button>
+            <div class="lab-container">
+                <div class="lab-tabs">
+                    <div class="lab-tab active" data-tab="double-slit"><i class="fas fa-wave-square"></i> Double-Slit</div>
+                    <div class="lab-tab" data-tab="superposition"><i class="fas fa-layer-group"></i> Superposition</div>
+                    <div class="lab-tab" data-tab="entanglement"><i class="fas fa-link"></i> Entanglement</div>
+                    <div class="lab-tab" data-tab="tunneling"><i class="fas fa-arrow-right"></i> Tunneling</div>
                 </div>
 
-                <canvas id="experiment-canvas" class="demo-canvas"></canvas>
+                <!-- Tab 1: Double-Slit -->
+                <div class="lab-content active" id="double-slit">
+                    <div class="sim-header">
+                        <h3>Double-Slit Experiment</h3>
+                        <p>Watch particles create interference patterns when unobserved, but act like particles when measured.</p>
+                    </div>
+                    <div class="sim-screen"><canvas id="canvas1"></canvas>
+                        <div class="sim-overlay">
+                            <div class="overlay-item"><span class="overlay-label">Mode:</span><span class="overlay-value" id="mode1">Wave</span></div>
+                            <div class="overlay-item"><span class="overlay-label">Particles:</span><span class="overlay-value" id="particles1">0</span></div>
+                        </div>
+                    </div>
+                    <div class="sim-controls">
+                        <div class="control-group">
+                            <label>Emission Rate <span class="control-value" id="rate1">50</span></label>
+                            <input type="range" id="rateSlider1" min="10" max="100" value="50">
+                        </div>
+                        <div class="control-group">
+                            <label>Slit Width <span class="control-value" id="width1">20 nm</span></label>
+                            <input type="range" id="widthSlider1" min="10" max="50" value="20">
+                        </div>
+                    </div>
+                    <div class="sim-actions">
+                        <button class="sim-btn" onclick="startDoubleSlit()"><i class="fas fa-play"></i> Start Wave Mode</button>
+                        <button class="sim-btn secondary" onclick="observeDoubleSlit()"><i class="fas fa-eye"></i> Observe (Collapse)</button>
+                        <button class="sim-btn secondary" onclick="resetDoubleSlit()"><i class="fas fa-redo"></i> Reset</button>
+                    </div>
+                </div>
 
-                <div id="experimentInfo" style="color: #b8b8d4; margin-top: 1.5rem; line-height: 1.8;">
-                    <strong style="color: var(--quantum-blue);">Double-Slit Experiment:</strong><br>
-                    Particles shot through two slits create an interference pattern, proving they travel as waves. But observe which slit they go through, and the pattern disappears!
+                <!-- Tab 2: Superposition -->
+                <div class="lab-content" id="superposition">
+                    <div class="sim-header">
+                        <h3>Quantum Superposition Simulator</h3>
+                        <p>Visualize particles existing in multiple states simultaneously until measured.</p>
+                    </div>
+                    <div class="sim-screen"><canvas id="canvas2"></canvas></div>
+                    <div class="sim-controls">
+                        <div class="control-group">
+                            <label>Superposition States <span class="control-value" id="states2">5</span></label>
+                            <input type="range" id="statesSlider" min="2" max="10" value="5">
+                        </div>
+                    </div>
+                    <div class="sim-actions">
+                        <button class="sim-btn" onclick="measureSuperposition()"><i class="fas fa-bullseye"></i> Measure State</button>
+                        <button class="sim-btn secondary" onclick="resetSuperposition()"><i class="fas fa-undo"></i> Reset</button>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric-card"><div class="metric-label">Current State</div><div class="metric-value" id="current-state">Superposed</div></div>
+                        <div class="metric-card"><div class="metric-label">Probability</div><div class="metric-value" id="probability">Equal</div></div>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Entanglement -->
+                <div class="lab-content" id="entanglement">
+                    <div class="sim-header">
+                        <h3>Quantum Entanglement Visualizer</h3>
+                        <p>See how measuring one particle instantly affects its entangled partner.</p>
+                    </div>
+                    <div class="sim-screen"><canvas id="canvas3"></canvas></div>
+                    <div class="sim-controls">
+                        <div class="control-group">
+                            <label>Distance <span class="control-value" id="distance3">1000 km</span></label>
+                            <input type="range" id="distanceSlider" min="100" max="5000" value="1000">
+                        </div>
+                    </div>
+                    <div class="sim-actions">
+                        <button class="sim-btn" onclick="measureParticleA()"><i class="fas fa-atom"></i> Measure Particle A</button>
+                        <button class="sim-btn" onclick="measureParticleB()"><i class="fas fa-atom"></i> Measure Particle B</button>
+                        <button class="sim-btn secondary" onclick="resetEntanglement()"><i class="fas fa-sync"></i> Create New Pair</button>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric-card"><div class="metric-label">Particle A</div><div class="metric-value" id="particle-a">?</div></div>
+                        <div class="metric-card"><div class="metric-label">Particle B</div><div class="metric-value" id="particle-b">?</div></div>
+                        <div class="metric-card"><div class="metric-label">Correlation</div><div class="metric-value" id="correlation">100%</div></div>
+                    </div>
+                </div>
+
+                <!-- Tab 4: Tunneling -->
+                <div class="lab-content" id="tunneling">
+                    <div class="sim-header">
+                        <h3>Quantum Tunneling Demonstration</h3>
+                        <p>Watch particles pass through barriers they classically shouldn't be able to cross.</p>
+                    </div>
+                    <div class="sim-screen"><canvas id="canvas4"></canvas></div>
+                    <div class="sim-controls">
+                        <div class="control-group">
+                            <label>Barrier Height <span class="control-value" id="barrier4">5 eV</span></label>
+                            <input type="range" id="barrierSlider" min="1" max="10" value="5">
+                        </div>
+                        <div class="control-group">
+                            <label>Particle Energy <span class="control-value" id="energy4">3 eV</span></label>
+                            <input type="range" id="energySlider" min="1" max="10" value="3">
+                        </div>
+                    </div>
+                    <div class="sim-actions">
+                        <button class="sim-btn" onclick="fireParticle()"><i class="fas fa-bolt"></i> Fire Particle</button>
+                        <button class="sim-btn secondary" onclick="clearTunneling()"><i class="fas fa-eraser"></i> Clear</button>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric-card"><div class="metric-label">Tunneling Probability</div><div class="metric-value" id="tunnel-prob">34%</div></div>
+                        <div class="metric-card"><div class="metric-label">Attempts</div><div class="metric-value" id="attempts">0</div></div>
+                        <div class="metric-card"><div class="metric-label">Successes</div><div class="metric-value" id="successes">0</div></div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div class="section">
-            <h2>Quantum Measurement Simulator</h2>
-            <div class="measurement-box">
-                <h3 style="color: var(--quantum-purple);">Schrödinger's Particle</h3>
-                <p style="color: #b8b8d4; margin: 1rem 0;">
-                    This quantum particle exists in superposition. Click to measure its state and collapse the wave function!
-                </p>
-                
-                <div class="measurement-result" id="measurementResult">
-                    |ψ⟩ = α|↑⟩ + β|↓⟩
-                </div>
-                
-                <button class="btn" onclick="measureQuantumState()">
-                    Measure Quantum State
-                </button>
-                
-                <p style="color: #b8b8d4; margin-top: 1rem; font-size: 0.9rem;">
-                    Before measurement: Superposition of spin up and spin down<br>
-                    After measurement: Definite state (50% chance each)
-                </p>
-            </div>
-        </div>
-
-        <div class="section">
-            <h2>Key Quantum Concepts</h2>
-            <div class="grid-2">
+        <section>
+            <h2 class="section-title">Key Quantum <span class="gradient-text">Concepts</span></h2>
+            <div class="info-grid">
                 <div class="info-card">
-                    <h3>🌊 Wave Functions</h3>
-                    <p>Described by the Schrödinger equation, wave functions represent the probability amplitude of finding a particle in a particular state. The square of the amplitude gives the probability.</p>
+                    <span class="icon">🌊</span>
+                    <h3>Wave Functions</h3>
+                    <p>Described by Schrödinger's equation, wave functions represent probability amplitudes. The square gives the probability.</p>
                 </div>
                 <div class="info-card">
-                    <h3>🎯 Quantum States</h3>
-                    <p>Quantum systems exist in discrete energy levels. An electron in an atom can only occupy specific orbital states, not values in between.</p>
+                    <span class="icon">🎯</span>
+                    <h3>Quantum States</h3>
+                    <p>Systems exist in discrete energy levels. Electrons can only occupy specific orbital states, not values in between.</p>
                 </div>
                 <div class="info-card">
-                    <h3>💫 Spin</h3>
-                    <p>An intrinsic property of particles like angular momentum, but quantized. Electrons have spin ½, always measured as "up" or "down" along any axis.</p>
+                    <span class="icon">💫</span>
+                    <h3>Spin</h3>
+                    <p>Intrinsic property like angular momentum, but quantized. Electrons have spin ½, measured as "up" or "down."</p>
                 </div>
                 <div class="info-card">
-                    <h3>🔬 Quantum Tunneling</h3>
-                    <p>Particles can pass through energy barriers that classical physics says should be impenetrable. This makes nuclear fusion in stars possible!</p>
+                    <span class="icon">💻</span>
+                    <h3>Quantum Computing</h3>
+                    <p>Uses qubits in superposition, potentially solving problems exponentially faster than classical computers.</p>
                 </div>
             </div>
-        </div>
-
-        <div class="section">
-            <h2>Applications of Quantum Mechanics</h2>
-            <div class="grid-2">
-                <div class="info-card">
-                    <h3>💻 Quantum Computing</h3>
-                    <p>Uses qubits that exist in superposition, potentially solving problems exponentially faster than classical computers.</p>
-                </div>
-                <div class="info-card">
-                    <h3>🔐 Quantum Cryptography</h3>
-                    <p>Entanglement enables theoretically unbreakable encryption. Any eavesdropping attempt disturbs the quantum state.</p>
-                </div>
-                <div class="info-card">
-                    <h3>⚡ Semiconductors</h3>
-                    <p>Modern electronics rely on quantum tunneling. Every transistor in your computer uses quantum effects.</p>
-                </div>
-                <div class="info-card">
-                    <h3>🔬 Microscopy</h3>
-                    <p>Quantum tunneling microscopes can image individual atoms by detecting electrons tunneling between tip and surface.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="section">
-            <h2>The Quantum Frontier</h2>
-            <p>Despite a century of success, quantum mechanics still puzzles physicists:</p>
-            
-            <div style="margin-top: 2rem; line-height: 2;">
-                <p><strong style="color: var(--quantum-blue);">Measurement Problem:</strong> Why does observation collapse the wave function? What counts as "measurement"?</p>
-                
-                <p><strong style="color: var(--quantum-blue);">Many-Worlds:</strong> Do all possible quantum outcomes occur in parallel universes?</p>
-                
-                <p><strong style="color: var(--quantum-blue);">Quantum Gravity:</strong> How do we reconcile quantum mechanics with general relativity?</p>
-                
-                <p><strong style="color: var(--quantum-blue);">Consciousness:</strong> Does consciousness play a role in quantum measurement?</p>
-            </div>
-        </div>
+        </section>
     </div>
 
+    <footer><p>© 2025 CosmicLab - Quantum Physics Education</p></footer>
+
     <script>
-        function toggleTheme() {
-            document.body.classList.toggle('light-mode');
+        // Generate stars
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 200; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            starsContainer.appendChild(star);
         }
 
-        let currentExperiment = 'double-slit';
+        // Navigation
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+        hamburger.addEventListener('click', () => navLinks.classList.toggle('active'));
 
-        // Quantum background animation
-        const canvas = document.getElementById('quantum-canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        const particles = [];
-        for (let i = 0; i < 150; i++) {
-            particles.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                vx: (Math.random() - 0.5) * 2,
-                vy: (Math.random() - 0.5) * 2,
-                phase: Math.random() * Math.PI * 2
+        // Tab switching
+        document.querySelectorAll('.lab-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.lab-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.lab-content').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                document.getElementById(this.dataset.tab).classList.add('active');
+                initTab(this.dataset.tab);
             });
-        }
-
-        function animateBackground() {
-            ctx.fillStyle = 'rgba(10, 10, 26, 0.1)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            particles.forEach((p, i) => {
-                p.x += p.vx;
-                p.y += p.vy;
-                p.phase += 0.02;
-
-                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-
-                const size = Math.sin(p.phase) * 2 + 2;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
-                
-                const hue = (Math.sin(p.phase) + 1) * 180;
-                ctx.fillStyle = `hsla(${hue}, 100%, 70%, 0.6)`;
-                ctx.fill();
-
-                particles.forEach((p2, j) => {
-                    if (i < j) {
-                        const dx = p2.x - p.x;
-                        const dy = p2.y - p.y;
-                        const dist = Math.sqrt(dx * dx + dy * dy);
-                        
-                        if (dist < 100) {
-                            ctx.beginPath();
-                            ctx.moveTo(p.x, p.y);
-                            ctx.lineTo(p2.x, p2.y);
-                            ctx.strokeStyle = `rgba(0, 212, 255, ${0.2 * (1 - dist / 100)})`;
-                            ctx.stroke();
-                        }
-                    }
-                });
-            });
-
-            requestAnimationFrame(animateBackground);
-        }
-
-        // Experiment simulator
-        const expCanvas = document.getElementById('experiment-canvas');
-        const expCtx = expCanvas.getContext('2d');
-        expCanvas.width = expCanvas.offsetWidth;
-        expCanvas.height = 400;
-
-        function runExperiment(type) {
-            currentExperiment = type;
-            
-            document.querySelectorAll('.experiment-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.closest('.experiment-btn').classList.add('active');
-
-            const info = {
-                'double-slit': '<strong style="color: var(--quantum-blue);">Double-Slit Experiment:</strong><br>Particles shot through two slits create an interference pattern, proving they travel as waves. But observe which slit they go through, and the pattern disappears!',
-                'superposition': '<strong style="color: var(--quantum-blue);">Quantum Superposition:</strong><br>A quantum particle exists in multiple states simultaneously until measured. Like Schrödinger\'s cat being both alive and dead until you open the box.',
-                'measurement': '<strong style="color: var(--quantum-blue);">Wave Function Collapse:</strong><br>Before measurement, a particle is spread out as a wave of probabilities. Measurement "collapses" this into a single definite state.',
-                'tunneling': '<strong style="color: var(--quantum-blue);">Quantum Tunneling:</strong><br>Particles can pass through energy barriers they shouldn\'t classically be able to cross. It\'s like a ball rolling through a hill instead of over it!'
-            };
-            
-            document.getElementById('experimentInfo').innerHTML = info[type];
-            drawExperiment(type);
-        }
-
-        function drawExperiment(type) {
-            expCtx.fillStyle = '#000';
-            expCtx.fillRect(0, 0, expCanvas.width, expCanvas.height);
-
-            if (type === 'double-slit') {
-                const centerY = expCanvas.height / 2;
-                
-                expCtx.fillStyle = '#666';
-                expCtx.fillRect(expCanvas.width / 3, 0, 10, centerY - 40);
-                expCtx.fillRect(expCanvas.width / 3, centerY + 40, 10, expCanvas.height);
-                
-                for (let i = 0; i < 30; i++) {
-                    const x = expCanvas.width * 0.7;
-                    const y = centerY + Math.sin(i * 0.5) * 100;
-                    const intensity = Math.cos(i * 0.5) ** 2;
-                    
-                    expCtx.fillStyle = `rgba(0, 212, 255, ${intensity})`;
-                    expCtx.fillRect(x - 2, y - 5, 4, 10);
-                }
-                
-                for (let i = 0; i < 20; i++) {
-                    const x = Math.random() * expCanvas.width / 3;
-                    const y = Math.random() * expCanvas.height;
-                    
-                    expCtx.fillStyle = 'rgba(240, 147, 251, 0.8)';
-                    expCtx.beginPath();
-                    expCtx.arc(x, y, 2, 0, Math.PI * 2);
-                    expCtx.fill();
-                }
-            } else if (type === 'superposition') {
-                const centerX = expCanvas.width / 2;
-                const centerY = expCanvas.height / 2;
-                
-                expCtx.strokeStyle = 'rgba(0, 212, 255, 0.6)';
-                expCtx.lineWidth = 2;
-                expCtx.beginPath();
-                expCtx.arc(centerX, centerY - 50, 40, 0, Math.PI * 2);
-                expCtx.stroke();
-                
-                expCtx.strokeStyle = 'rgba(181, 55, 242, 0.6)';
-                expCtx.beginPath();
-                expCtx.arc(centerX, centerY + 50, 40, 0, Math.PI * 2);
-                expCtx.stroke();
-                
-                const gradient = expCtx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 100);
-                gradient.addColorStop(0, 'rgba(0, 212, 255, 0.3)');
-                gradient.addColorStop(0.5, 'rgba(181, 55, 242, 0.3)');
-                gradient.addColorStop(1, 'rgba(181, 55, 242, 0)');
-                
-                expCtx.fillStyle = gradient;
-                expCtx.fillRect(0, 0, expCanvas.width, expCanvas.height);
-            } else if (type === 'measurement') {
-                for (let x = 0; x < expCanvas.width / 2; x += 20) {
-                    const y = expCanvas.height / 2 + Math.sin(x * 0.1) * 50;
-                    
-                    expCtx.fillStyle = `rgba(0, 212, 255, ${0.5 + Math.sin(x * 0.1) * 0.3})`;
-                    expCtx.beginPath();
-                    expCtx.arc(x, y, 5, 0, Math.PI * 2);
-                    expCtx.fill();
-                }
-                
-                expCtx.fillStyle = 'rgba(255, 100, 100, 0.8)';
-                expCtx.fillRect(expCanvas.width / 2 - 2, 0, 4, expCanvas.height);
-                
-                const finalY = expCanvas.height / 2 + (Math.random() - 0.5) * 100;
-                expCtx.fillStyle = 'rgba(181, 55, 242, 0.9)';
-                expCtx.beginPath();
-                expCtx.arc(expCanvas.width * 0.75, finalY, 10, 0, Math.PI * 2);
-                expCtx.fill();
-            } else if (type === 'tunneling') {
-                expCtx.fillStyle = '#444';
-                expCtx.fillRect(expCanvas.width / 2 - 30, expCanvas.height / 3, 60, expCanvas.height / 3);
-                
-                const particleX = expCanvas.width / 3;
-                const particleY = expCanvas.height / 2;
-                
-                for (let i = 0; i < 10; i++) {
-                    const x = particleX + i * 15;
-                    const alpha = Math.exp(-i * 0.3);
-                    
-                    expCtx.fillStyle = `rgba(0, 212, 255, ${alpha})`;
-                    expCtx.beginPath();
-                    expCtx.arc(x, particleY, 8, 0, Math.PI * 2);
-                    expCtx.fill();
-                }
-                
-                expCtx.fillStyle = 'rgba(240, 147, 251, 0.9)';
-                expCtx.beginPath();
-                expCtx.arc(expCanvas.width * 0.7, particleY, 8, 0, Math.PI * 2);
-                expCtx.fill();
-            }
-        }
-
-        function measureQuantumState() {
-            const states = ['|↑⟩ (Spin Up)', '|↓⟩ (Spin Down)'];
-            const measured = states[Math.floor(Math.random() * states.length)];
-            
-            document.getElementById('measurementResult').textContent = measured;
-            document.getElementById('measurementResult').style.animation = 'none';
-            setTimeout(() => {
-                document.getElementById('measurementResult').style.animation = 'glow 1s ease-in-out';
-            }, 10);
-        }
-
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
         });
 
-        window.addEventListener('load', () => {
-            animateBackground();
-            drawExperiment('double-slit');
+        // Canvas setup
+        const canvas1 = document.getElementById('canvas1');
+        const ctx1 = canvas1.getContext('2d');
+        const canvas2 = document.getElementById('canvas2');
+        const ctx2 = canvas2.getContext('2d');
+        const canvas3 = document.getElementById('canvas3');
+        const ctx3 = canvas3.getContext('2d');
+        const canvas4 = document.getElementById('canvas4');
+        const ctx4 = canvas4.getContext('2d');
+
+        [canvas1, canvas2, canvas3, canvas4].forEach(c => {
+            c.width = c.parentElement.offsetWidth;
+            c.height = 500;
+        });
+
+        // Tab 1: Double-Slit
+        let doubleSlit = { running: false, observed: false, particles: [] };
+        function startDoubleSlit() {
+            doubleSlit.running = true;
+            doubleSlit.observed = false;
+            document.getElementById('mode1').textContent = 'Wave';
+            animateDoubleSlit();
+        }
+        function observeDoubleSlit() {
+            doubleSlit.observed = true;
+            document.getElementById('mode1').textContent = 'Particle';
+        }
+        function resetDoubleSlit() {
+            doubleSlit = { running: false, observed: false, particles: [] };
+            document.getElementById('particles1').textContent = '0';
+            ctx1.clearRect(0, 0, canvas1.width, canvas1.height);
+        }
+        function animateDoubleSlit() {
+            if (!doubleSlit.running) return;
+            
+            ctx1.fillStyle = 'rgba(0,0,0,0.05)';
+            ctx1.fillRect(0, 0, canvas1.width, canvas1.height);
+            
+            // Draw slits
+            ctx1.fillStyle = '#333';
+            ctx1.fillRect(canvas1.width/3, 0, 20, canvas1.height/2 - 60);
+            ctx1.fillRect(canvas1.width/3, canvas1.height/2 + 60, 20, canvas1.height/2 - 60);
+            
+            // Add particles
+            if (Math.random() < 0.1) {
+                doubleSlit.particles.push({
+                    x: 50,
+                    y: canvas1.height/2 + (Math.random() - 0.5) * 200,
+                    vy: (Math.random() - 0.5) * 2
+                });
+            }
+            
+            // Update particles
+            doubleSlit.particles.forEach((p, i) => {
+                p.x += 2;
+                if (!doubleSlit.                if (!doubleSlit.observed) {
+                    // Wave mode: add interference effect
+                    p.y += Math.sin(p.x / 15) * 0.5;
+                } else {
+                    // Particle mode: straight path
+                    p.y += p.vy;
+                }
+
+                // Draw particle
+                ctx1.fillStyle = doubleSlit.observed ? '#FF6B6B' : '#4ADE80';
+                ctx1.beginPath();
+                ctx1.arc(p.x, p.y, 3, 0, Math.PI * 2);
+                ctx1.fill();
+
+                // Remove particles off-screen
+                if (p.x > canvas1.width) doubleSlit.particles.splice(i, 1);
+            });
+
+            document.getElementById('particles1').textContent = doubleSlit.particles.length;
+            requestAnimationFrame(animateDoubleSlit);
+        }
+
+        // Tab 2: Superposition
+        let superposition = { currentState: 'Superposed' };
+        function measureSuperposition() {
+            const states = parseInt(document.getElementById('states2').textContent);
+            const result = Math.floor(Math.random() * states) + 1;
+            superposition.currentState = `State ${result}`;
+            document.getElementById('current-state').textContent = superposition.currentState;
+            document.getElementById('probability').textContent = 'Collapsed';
+        }
+        function resetSuperposition() {
+            superposition.currentState = 'Superposed';
+            document.getElementById('current-state').textContent = superposition.currentState;
+            document.getElementById('probability').textContent = 'Equal';
+            ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
+        }
+        document.getElementById('statesSlider').addEventListener('input', function() {
+            document.getElementById('states2').textContent = this.value;
+        });
+
+        // Tab 3: Entanglement
+        let entanglement = { particleA: '?', particleB: '?', correlation: 100 };
+        function measureParticleA() {
+            const val = Math.random() < 0.5 ? '↑' : '↓';
+            entanglement.particleA = val;
+            entanglement.particleB = val === '↑' ? '↓' : '↑';
+            updateEntanglementUI();
+        }
+        function measureParticleB() {
+            const val = Math.random() < 0.5 ? '↑' : '↓';
+            entanglement.particleB = val;
+            entanglement.particleA = val === '↑' ? '↓' : '↑';
+            updateEntanglementUI();
+        }
+        function resetEntanglement() {
+            entanglement.particleA = '?';
+            entanglement.particleB = '?';
+            updateEntanglementUI();
+            ctx3.clearRect(0, 0, canvas3.width, canvas3.height);
+        }
+        function updateEntanglementUI() {
+            document.getElementById('particle-a').textContent = entanglement.particleA;
+            document.getElementById('particle-b').textContent = entanglement.particleB;
+            document.getElementById('correlation').textContent = entanglement.particleA === '?' ? '100%' : '100%';
+        }
+
+        document.getElementById('distanceSlider').addEventListener('input', function() {
+            document.getElementById('distance3').textContent = this.value + ' km';
+        });
+
+        // Tab 4: Tunneling
+        let tunneling = { attempts: 0, successes: 0 };
+        function fireParticle() {
+            const energy = parseInt(document.getElementById('energySlider').value);
+            const barrier = parseInt(document.getElementById('barrierSlider').value);
+            tunneling.attempts++;
+            if (Math.random() < energy / barrier) tunneling.successes++;
+            updateTunnelingUI();
+        }
+        function clearTunneling() {
+            tunneling.attempts = 0;
+            tunneling.successes = 0;
+            updateTunnelingUI();
+            ctx4.clearRect(0, 0, canvas4.width, canvas4.height);
+        }
+        function updateTunnelingUI() {
+            document.getElementById('attempts').textContent = tunneling.attempts;
+            document.getElementById('successes').textContent = tunneling.successes;
+            document.getElementById('tunnel-prob').textContent =
+                tunneling.attempts === 0 ? '0%' : Math.round((tunneling.successes / tunneling.attempts) * 100) + '%';
+        }
+
+        document.getElementById('energySlider').addEventListener('input', function() {
+            document.getElementById('energy4').textContent = this.value + ' eV';
+        });
+        document.getElementById('barrierSlider').addEventListener('input', function() {
+            document.getElementById('barrier4').textContent = this.value + ' eV';
+        });
+
+        // Initialize tab-specific things if needed
+        function initTab(tab) {
+            if (tab === 'double-slit') { canvas1.width = canvas1.parentElement.offsetWidth; }
+            else if (tab === 'superposition') { canvas2.width = canvas2.parentElement.offsetWidth; }
+            else if (tab === 'entanglement') { canvas3.width = canvas3.parentElement.offsetWidth; }
+            else if (tab === 'tunneling') { canvas4.width = canvas4.parentElement.offsetWidth; }
+        }
+
+        // Resize canvas on window resize
+        window.addEventListener('resize', () => {
+            [canvas1, canvas2, canvas3, canvas4].forEach(c => c.width = c.parentElement.offsetWidth);
         });
     </script>
 </body>
